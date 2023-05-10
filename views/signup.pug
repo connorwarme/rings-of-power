@@ -1,0 +1,22 @@
+extends layout 
+
+block content 
+  h1= title 
+
+  form(method="POST" action="")
+    div.form-group 
+      label(for="first_name") First Name
+      input(type="text" name="first_name" required=true)
+    div.form-group 
+      label(for="family_name") Family Name
+      input(type="text" name="family_name" required=true)
+    div.form-group 
+      label(for="email") Email
+      input(type="email" name="email" required=true)
+    div.form-group 
+      label(for="password") Password
+      input(type="password" name="password" required=true)
+    div.form-group 
+      label(for="confirm_password") Confirm Password
+      input(type="password" name="confirm_password" required=true)
+    button.submit-btn(type="submit") Signup
