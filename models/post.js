@@ -23,17 +23,38 @@ const PostSchema = new Schema({
     ref: "Category",
     required: true,
   },
-  // Don't think I need these, as each comment/like will ref post it belongs to
-  // comments: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "Comments",
-  //   required: true,
-  // },
-  // likes: {
-  //   type: Schema.Types.ObjectId,
-  //   ref: "Likes",
-  //   required: true,
-  // }
+  date: {
+    type: Date,
+    default: Date.now(),
+  },
+  // Don't know. Include comments and likes in post schema?
+  // or have each comment/like ref post it belongs to?
+  comments: [
+    {
+      author: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+      content: {
+        type: String,
+        required: true,
+      },
+      date: {
+        type: Date,
+        default: Date.now(),
+      }
+    }
+  ],
+  likes: [
+    {
+      author: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      }
+    }
+  ]
 })
 
 PostSchema.virtual("url").get(function() {
