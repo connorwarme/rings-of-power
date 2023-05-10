@@ -1,14 +1,16 @@
 const asyncHandler = require("express-async-handler")
 const { body, validationResult } = require("express-validator")
 const bcrypt = require("bcryptjs")
+const passport = require("passport")
 const User = require("../models/user")
 const Friends = require("../models/friends")
 
 exports.login_get = asyncHandler(async (req, res, next) => {
   res.render("login", { title: "Login" })
 })
-exports.login_post = asyncHandler(async (req, res, next) => {
-  res.send("Not implemented yet: login POST")
+exports.login_post = passport.authenticate("local", {
+  successRedirect: "/",
+  failureRedirect: "/login",
 })
 
 exports.signup_get = asyncHandler(async (req, res, next) => {
