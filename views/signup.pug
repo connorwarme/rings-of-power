@@ -20,3 +20,12 @@ block content
       label(for="confirm_password") Confirm Password
       input(type="password" name="confirm_password" required=true)
     button.submit-btn(type="submit") Signup
+
+  hr
+  if errors 
+    ul 
+      for error in errors 
+        li!= error.msg
+  if error 
+    ul 
+      li!= error.message
