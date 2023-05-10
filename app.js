@@ -9,7 +9,7 @@ const logger = require('morgan');
 require("./mongoConfig") 
 
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const userRouter = require('./routes/user');
 
 const app = express();
 

@@ -34,3 +34,18 @@ const UserSchema = new Schema({
     required: true,
   }
 })
+
+UserSchema.virtual("name").get(function() {
+  let fullname = ''
+  if (this.first_name && this.family_name) {
+    fullname = `${this.first_name} ${this.family_name}`
+  }
+  // does this need the opposite? (ref other node projects)
+  return fullname;
+})
+
+UserSchema.virtual("url".get(function() {
+  return `/user/${this._id}`
+}))
+
+module.exports = mongoose.model("User", UserSchema)
