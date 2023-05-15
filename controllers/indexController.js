@@ -1,17 +1,34 @@
+require("dotenv").config()
 const asyncHandler = require("express-async-handler")
 const { body, validationResult } = require("express-validator")
 const bcrypt = require("bcryptjs")
 const passport = require("passport")
+const jwt = require("jsonwebtoken")
 const User = require("../models/user")
 const Friends = require("../models/friends")
 
 exports.login_get = asyncHandler(async (req, res, next) => {
   res.render("login", { title: "Login" })
 })
-exports.login_post = passport.authenticate("local", {
-  successRedirect: "/",
-  failureRedirect: "/login",
-})
+exports.login_post = (req, res, next) => {
+  passport.authenticate("local", { session: false}, (err, user, info) => {
+    if (err) {
+      return res.render("error", { error: err })
+    }
+    if (user === false) {
+      const error = new Error("User not found!")
+      error.status = 401
+      return res.render("error", { error: error })
+    } else {
+      const token = jwt.sign({ user }, process.env.JWT_KEY)
+      return res.render("index", { 
+        title: "Home",
+        user, 
+        token 
+      })
+    }
+  })(req, res, next)
+}
 
 exports.signup_get = asyncHandler(async (req, res, next) => {
   res.render("signup", { title: "Signup" })
@@ -89,3 +106,7 @@ exports.signup_post = [
     })
   })
 ]
+
+exports.verifyUser = (req, res, next) => {
+
+}
