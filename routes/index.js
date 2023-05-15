@@ -4,7 +4,7 @@ const router = express.Router();
 const index_controller = require("../controllers/indexController")
 
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/', index_controller.verifyToken, function(req, res, next) {
   res.render('index', { 
     title: 'Home',
     user: req.user, 

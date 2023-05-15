@@ -21,11 +21,7 @@ exports.login_post = (req, res, next) => {
       return res.render("error", { error: error })
     } else {
       const token = jwt.sign({ user }, process.env.JWT_KEY)
-      return res.render("index", { 
-        title: "Home",
-        user, 
-        token 
-      })
+      return res.redirect("/")
     }
   })(req, res, next)
 }
@@ -107,6 +103,21 @@ exports.signup_post = [
   })
 ]
 
-exports.verifyUser = (req, res, next) => {
-
+exports.verifyToken = (req, res, next) => {
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token == null) {
+    return res.sendStatus(401).json({
+      message: "No token found."
+    })
+  }
+  jwt.verify(token, process.env.JWT_KEY, (err, user) => {
+    if (err) {
+      const error = new Error("You don't have proper clearance :/")
+      error.status = 401
+      return res.render("error", { error: error })
+    }
+    req.user = user
+    next()
+  })
 }
