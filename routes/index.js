@@ -9,9 +9,14 @@ router.get('/', index_controller.verifyToken, function(req, res, next) {
   console.log(req.user)
   res.render('index', { 
     title: 'Home',
-    user: req.user, 
+    user: req.user.user, 
     token: req.token,
   });
+  // res.json({ 
+  //   user: req.user, 
+  //   token: req.token,
+  //   title: "Home"
+  // })
 });
 
 router.get('/login', index_controller.login_get)
