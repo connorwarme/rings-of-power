@@ -5,7 +5,10 @@ const index_controller = require("../controllers/indexController")
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index', { title: 'Express' });
+  res.render('index', { 
+    title: 'Home',
+    user: req.user, 
+  });
 });
 
 router.get('/login', index_controller.login_get)
