@@ -9,3 +9,7 @@ Content-Type: application/json
   "email": "a@gmail.com",
   "password": "westie"
 }
+
+### 
+GET http://localhost:3000/login
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0NWMxMzdkMGY4YjBmZjI3MjJkZTg0YiIsImZpcnN0X25hbWUiOiJhbWl0eSIsImZhbWlseV9uYW1lIjoid2FybWUiLCJlbWFpbCI6ImFAZ21haWwuY29tIiwiaGFzaCI6IiQyYSQxMiRIUEhFLmVjUmhVcGh0TE0uc1hUM2hPN25LaS93eUNheEZnUUE2Qk9XY2R2TzV1VkNzZUhodSIsImZyaWVuZF9saXN0IjoiNjQ1YzEzN2QwZjhiMGZmMjcyMmRlODRhIiwiX192IjowfSwiaWF0IjoxNjg0MTgxODQ3fQ.EVIyr9nT1JAz25Cfo8cfWJ-0qI7PRli1NBlP0Dl-G2g

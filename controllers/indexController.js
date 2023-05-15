@@ -107,18 +107,26 @@ exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
   if (token == null) {
-    return res.sendStatus(404).json({
-      message: "No token found."
-    })
+    const error = new Error("No token found.")
+    error.status = 401
+    return res.render("error", { error: error })
   }
   jwt.verify(token, process.env.JWT_KEY, (err, user) => {
     if (err) {
       const error = new Error("You don't have proper clearance :/")
-      error.status = 401
+      error.status = 402
       return res.render("error", { error: error })
     }
     req.user = user
     req.token = token
     next()
   })
+}
+exports.verifyNoToken = (req, res, next) => {
+  const authHeader = req.headers['authorization']
+  const token = authHeader && authHeader.split(' ')[1]
+  if (token != null) {
+    res.json({ message: "You are already a user!"})
+  }
+  next()
 }
