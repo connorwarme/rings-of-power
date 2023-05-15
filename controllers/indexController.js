@@ -21,7 +21,7 @@ exports.login_post = (req, res, next) => {
       return res.render("error", { error: error })
     } else {
       const token = jwt.sign({ user }, process.env.JWT_KEY)
-      return res.redirect("/")
+      return res.json({ user, token })
     }
   })(req, res, next)
 }
@@ -107,7 +107,7 @@ exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
   if (token == null) {
-    return res.sendStatus(401).json({
+    return res.sendStatus(404).json({
       message: "No token found."
     })
   }
@@ -118,6 +118,7 @@ exports.verifyToken = (req, res, next) => {
       return res.render("error", { error: error })
     }
     req.user = user
+    req.token = token
     next()
   })
 }

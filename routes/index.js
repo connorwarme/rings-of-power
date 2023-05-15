@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
+require("../passport")
 
 const index_controller = require("../controllers/indexController")
 
 /* GET home page. */
 router.get('/', index_controller.verifyToken, function(req, res, next) {
+  console.log(req.user)
   res.render('index', { 
     title: 'Home',
     user: req.user, 

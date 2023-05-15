@@ -1,5 +1,10 @@
+require("dotenv").config()
+
 const passport = require("passport")
 const LocalStrategy = require('passport-local').Strategy
+const passportJWT = require('passport-jwt')
+const JwtStrategy = passportJWT.Strategy
+const ExtractJWT = passportJWT.ExtractJwt
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const User = require('./models/user')
@@ -40,6 +45,15 @@ passport.deserializeUser(async(id, done) => {
     done(err)
   }
 })
+
+passport.use(new JwtStrategy({
+    jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
+    secretOrKey: process.env.JWT_KEY,
+  }, 
+  function(jwt_payload, done) {
+    console.log(jwt_payload)
+  }
+  ))
 
 exports.authenticateToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
