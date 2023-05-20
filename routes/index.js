@@ -30,4 +30,7 @@ router.get('/profile', index_controller.verifyToken, index_controller.profile_ge
 router.get('/friends', index_controller.verifyToken, index_controller.friends_get)
 
 router.post('/sendrequest', index_controller.verifyToken, index_controller.friends_send_request_post)
+router.post('/acceptrequest', index_controller.verifyToken, index_controller.friends_accept_request_post)
+
+
 module.exports = router;

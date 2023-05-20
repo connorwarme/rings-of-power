@@ -30,3 +30,12 @@ Content-Type: application/json
 {
   "userid": "64693f98862e978773169454"
 }
+
+###
+POST http://localhost:3000/acceptrequest
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7Il9pZCI6IjY0NjkyODA4OGM3M2M3ODliZDEwY2JjNSIsImZpcnN0X25hbWUiOiJjb24iLCJmYW1pbHlfbmFtZSI6Im1hbiIsImVtYWlsIjoiY0BnbWFpbC5jb20iLCJoYXNoIjoiJDJhJDEyJDNzTERHTzh3Y3JNODFHU1RCZDBFeS5ISzdPNGNoTzFlWmlLeU9HRUFVRndweDZRY0hFelJpIiwiZnJpZW5kX2xpc3QiOiI2NDY5MjgwODhjNzNjNzg5YmQxMGNiYzQiLCJfX3YiOjB9LCJpYXQiOjE2ODQ2MTMyMDF9.VHVHZ5SeCCdatqMDZNoTHO-GqYfcAX5FODaV4sfZ81w 
+Content-Type: application/json
+
+{
+  "userid": "64693f98862e978773169454"
+}

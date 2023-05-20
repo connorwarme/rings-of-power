@@ -152,6 +152,43 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
   res.json({ user: req.user.user, friend_list, other_friend_list })
 })
 
+exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
+  // get user's friend list
+  const user_list = await Friends.findById(req.user.user.friend_list)
+  const user_newlist = new Friends({
+    list: user_list.list,
+    pending: user_list.pending,
+    request: user_list.request,
+    _id: user_list._id,
+  })
+  // get other user's friend list
+  const other_user = await User.findById(req.body.userid)
+  const other_list = await Friends.findById(other_user.friend_list)
+  const other_newlist = new Friends({
+    list: other_list.list,
+    pending: other_list.pending,
+    request: other_list.request,
+    _id: other_list._id,
+  })
+  // add friend to user list, remove from request list
+  user_newlist.list.push(other_user._id)
+  user_newlist.request = user_list.request.filter(id => id != other_user._id)
+  // add friend to other list, remove from pending list
+  other_newlist.list.push(req.user.user._id)
+  other_newlist.pending = other_list.pending.filter(id => id != req.user.user._id)
+  // update both lists on the database
+  const [userList, otherList] = await Promise.all([
+    Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, {}),
+    Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, {}),
+  ])
+
+  res.json({ user: req.user.user, userList, otherList })
+})
+
+exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
+
+})
+
 exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
