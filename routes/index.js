@@ -27,4 +27,6 @@ router.post('/signup', index_controller.signup_post)
 
 router.get('/profile', index_controller.verifyToken, index_controller.profile_get)
 
+router.get('/friends', index_controller.verifyToken, index_controller.friends_get)
+
 module.exports = router;

@@ -109,6 +109,12 @@ exports.profile_get = (req, res, next) => {
   return res.json({ user: req.user.user })
 }
 
+exports.friends_get = (req, res, next) => {
+  const friends = Friends.findById(req.user.user.friend_list).exec()
+  console.log(friends)
+  return res.json({ user: req.user.user, friends })
+}
+
 exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
