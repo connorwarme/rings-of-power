@@ -109,11 +109,11 @@ exports.profile_get = (req, res, next) => {
   return res.json({ user: req.user.user })
 }
 
-exports.friends_get = (req, res, next) => {
-  const friends = Friends.findById(req.user.user.friend_list).exec()
+exports.friends_get = asyncHandler(async(req, res, next) => {
+  const friends = await Friends.findById(req.user.user.friend_list).exec()
   console.log(friends)
-  return res.json({ user: req.user.user, friends })
-}
+  return res.json({ user: req.user.user, friends_list: friends.list, friends_pending: friends.pending, friends_request: friends.request })
+})
 
 exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
