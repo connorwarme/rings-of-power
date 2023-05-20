@@ -105,10 +105,15 @@ exports.signup_post = [
   })
 ]
 
+exports.profile_get = (req, res, next) => {
+  return res.json({ user: req.user.user })
+}
+
 exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
   if (token == null) {
+    // !!! need user to sign in to access page content
     const error = new Error("No token found.")
     error.status = 401
     return res.render("error", { error: error })
