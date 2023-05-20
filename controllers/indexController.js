@@ -65,6 +65,7 @@ exports.signup_post = [
       const friendlist = new Friends({
         list: [],
         pending: [],
+        request: [],
       })
       const user = new User({
         first_name: req.body.first_name,
@@ -92,6 +93,7 @@ exports.signup_post = [
             error: error,
           })
         } else {
+          await friendlist.save()
           await user.save()
           res.json({
             title: "User Profile",
