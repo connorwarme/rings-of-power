@@ -6,11 +6,18 @@ const FriendsSchema = new Schema({
   //   ref: "User",
   //   required: true,
   // },
+  // friends list
   list: {
     type: Array,
     default: [],
   },
+  // pending list -- user requested friend, awaiting confirmation
   pending: {
+    type: Array,
+    default: [],
+  },
+  // request list -- other requested user, awaiting user confirmation
+  request: {
     type: Array,
     default: [],
   },
