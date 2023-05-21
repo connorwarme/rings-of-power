@@ -171,9 +171,12 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
     request: other_list.request,
     _id: other_list._id,
   })
+  // both of the following will fire before the values are populated!!!
+  console.log(user_list.request)
+  console.log(other_list.pending)
   // add friend to user list, remove from request list
-  user_newlist.list.push(other_user._id)
-  user_newlist.request = user_list.request.filter(id => id != other_user._id)
+  user_newlist.list.push(other_user._id.toString())
+  user_newlist.request = user_list.request.filter(id => id != other_user._id.toString())
   // add friend to other list, remove from pending list
   other_newlist.list.push(req.user.user._id)
   other_newlist.pending = other_list.pending.filter(id => id != req.user.user._id)
