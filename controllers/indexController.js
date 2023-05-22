@@ -152,7 +152,6 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
   // !!! need to delay the response until after friend_list and other_friend_list populate.. 
   res.json({ user: req.user.user, friend_list, other_friend_list })
 })
-
 exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
   // get user's friend list
   const user_list = await Friends.findById(req.user.user.friend_list)
@@ -172,8 +171,8 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
     _id: other_list._id,
   })
   // both of the following will fire before the values are populated!!!
-  console.log(user_list.request)
-  console.log(other_list.pending)
+  console.log(`req.body.userid: ${req.body.userid}`)
+  // console.log(`other list pending: ${other_list.pending}`)
   // add friend to user list, remove from request list
   user_newlist.list.push(other_user._id.toString())
   user_newlist.request = user_list.request.filter(id => id != other_user._id.toString())
