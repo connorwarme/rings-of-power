@@ -170,12 +170,7 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
     _id: other_list._id,
   })
 
-  console.log(`req.body.userid: ${req.body.userid}`)
-  // console.log(`other list pending: ${other_list.pending}`)
   // add friend to user list, remove from request list
-
-  // 
-
   user_newlist.list.push(other_user._id.toString())
   user_newlist.request = user_list.request.filter(id => id != other_user._id.toString())
   // add friend to other list, remove from pending list
@@ -183,11 +178,10 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
   other_newlist.pending = other_list.pending.filter(id => id != req.user.user._id)
   // update both lists on the database
   const [userList, otherList] = await Promise.all([
-    Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, {}),
-    Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, {}),
+    Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true }),
+    Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true }),
   ])
 
-  // !!! currently, this returns thet old version of the data (but the db shows the correct value...where users are added to friend list and removed from request/pending)
   // not complete, needs to be thoroughly checked. 
 
   res.json({ user: req.user.user, userList, otherList })
