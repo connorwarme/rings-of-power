@@ -33,5 +33,7 @@ router.post('/sendrequest', index_controller.verifyToken, index_controller.frien
 router.post('/acceptrequest', index_controller.verifyToken, index_controller.friends_accept_request_post)
 router.post('/denyrequest', index_controller.verifyToken, index_controller.friends_deny_request_post)
 
+router.post('/createpost', index_controller.verifyToken, index_controller.create_post)
+
 
 module.exports = router;

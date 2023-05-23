@@ -6,6 +6,7 @@ const passport = require("passport")
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
 const Friends = require("../models/friends")
+const Post = require("../models/post")
 
 exports.login_get = asyncHandler(async (req, res, next) => {
   res.render("login", { title: "Login" })
@@ -218,6 +219,33 @@ exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
   
     res.json({ user: req.user.user, userList, otherList })
 })
+exports.create_post = [
+  body("title", "Post must have a title.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("content", "Post requires content.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(), 
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req)
+
+    const post = new Post({
+      title: req.body.title,
+      content: req.body.content,
+      author: req.user.user._id,
+    })
+
+    if (!errors.isEmpty()) {
+      res.json({ errors })
+    } else {
+      await post.save()
+      res.json({ user: req.user.user, post })
+    }
+  })
+]
 
 exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']

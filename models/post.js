@@ -10,7 +10,7 @@ const PostSchema = new Schema({
     required: true,
   },
   image: {
-    type: Image,
+    type: String,
     required: false,
   },
   author: {
@@ -18,11 +18,11 @@ const PostSchema = new Schema({
     ref: "User",
     required: true,
   },
-  category: {
-    type: Schema.Types.ObjectId,
-    ref: "Category",
-    required: true,
-  },
+  // category: {
+  //   type: Schema.Types.ObjectId,
+  //   ref: "Category",
+  //   required: true,
+  // },
   date: {
     type: Date,
     default: Date.now(),
