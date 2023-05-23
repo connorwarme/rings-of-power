@@ -31,6 +31,7 @@ router.get('/friends', index_controller.verifyToken, index_controller.friends_ge
 
 router.post('/sendrequest', index_controller.verifyToken, index_controller.friends_send_request_post)
 router.post('/acceptrequest', index_controller.verifyToken, index_controller.friends_accept_request_post)
+router.post('/denyrequest', index_controller.verifyToken, index_controller.friends_deny_request_post)
 
 
 module.exports = router;
