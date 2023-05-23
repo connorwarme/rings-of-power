@@ -115,6 +115,7 @@ exports.friends_get = asyncHandler(async(req, res, next) => {
   return res.json({ user: req.user.user, friends_list: friends.list, friends_pending: friends.pending, friends_request: friends.request })
 })
 
+// these next 3 functions could be refactored...a lot of repeated code
 exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
   // get user's friend list
   console.log(req.user.user)
@@ -187,7 +188,35 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
 })
 
 exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
-
+    // get user's friend list
+    const user_list = await Friends.findById(req.user.user.friend_list)
+    const user_newlist = new Friends({
+      list: user_list.list,
+      pending: user_list.pending,
+      request: user_list.request,
+      _id: user_list._id,
+    })
+    // get other user's friend list
+    const other_user = await User.findById(req.body.userid)
+    const other_list = await Friends.findById(other_user.friend_list)
+    const other_newlist = new Friends({
+      list: other_list.list,
+      pending: other_list.pending,
+      request: other_list.request,
+      _id: other_list._id,
+    })
+  
+    // remove id from user's request list
+    user_newlist.request = user_list.request.filter(id => id != other_user._id.toString())
+    // remove id from other's pending list
+    other_newlist.pending = other_list.pending.filter(id => id != req.user.user._id)
+    // update both lists on the database
+    const [userList, otherList] = await Promise.all([
+      Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true }),
+      Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true }),
+    ]) 
+  
+    res.json({ user: req.user.user, userList, otherList })
 })
 
 exports.verifyToken = (req, res, next) => {
