@@ -273,6 +273,25 @@ exports.unlike_post = asyncHandler(async (req, res, next) => {
   // query post, check likes array 
   // if user doesn't already like, don't allow
   // otherwise, remove user id from likes array
+  const post = await Post.findById(req.body.postid) 
+  console.log(post)
+  const likes = () => {
+    let value = 0
+    post.likes.forEach(like => {
+      if (like.author == req.user.user._id) {
+        value++
+      }
+    })
+    return value
+  }
+  const like = likes()
+  if (like == 0) {
+    res.json({ "error": "You can't unlike a post you haven't liked to begin with!"})
+  } else {
+    post.likes = post.likes.filter(item => item.author != req.user.user._id)
+    await post.save()
+    res.json({ post })
+  }
 })
 
 exports.verifyToken = (req, res, next) => {
