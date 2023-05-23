@@ -246,6 +246,34 @@ exports.create_post = [
     }
   })
 ]
+exports.like_post = asyncHandler(async (req, res, next) => {
+  // query post, check likes array
+  // if user already liked, don't allow
+  // otherwise, add user id to likes array
+  const post = await Post.findById(req.body.postid)
+  // is there a simpler way to do this? (check for preexisting like by user..)
+  const likes = () => {
+    let value = 0
+    post.likes.forEach(like => {
+      if (like.author == req.user.user._id) {
+        value++
+      }
+    })
+    return value
+  }
+  if (likes()) {
+    res.json({ "error": "You already like this post..."})
+  } else {
+    post.likes.push({ author: req.user.user._id })
+    await post.save()
+    res.json({ post })
+  }
+})
+exports.unlike_post = asyncHandler(async (req, res, next) => {
+  // query post, check likes array 
+  // if user doesn't already like, don't allow
+  // otherwise, remove user id from likes array
+})
 
 exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']

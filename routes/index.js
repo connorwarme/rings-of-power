@@ -34,6 +34,7 @@ router.post('/acceptrequest', index_controller.verifyToken, index_controller.fri
 router.post('/denyrequest', index_controller.verifyToken, index_controller.friends_deny_request_post)
 
 router.post('/createpost', index_controller.verifyToken, index_controller.create_post)
+router.post('/likepost', index_controller.verifyToken, index_controller.like_post)
 
 
 module.exports = router;
