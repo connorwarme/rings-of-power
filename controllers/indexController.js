@@ -145,10 +145,9 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
 
   // update both lists on database
   // !!! is this the proper way to do this?!
-  const friend_list = await Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, {})
-  const other_friend_list = await Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, {})
-
-  // !!! need to delay the response until after friend_list and other_friend_list populate.. 
+  const friend_list = await Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true })
+  const other_friend_list = await Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true })
+ 
   res.json({ user: req.user.user, friend_list, other_friend_list })
 })
 exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
