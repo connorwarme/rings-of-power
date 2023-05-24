@@ -327,6 +327,20 @@ exports.add_comment_post = [
     }
   })
 ]
+exports.delete_comment_post = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.body.postid)
+  // would it be easiest to pass thru comment id in order to delete it specifically?
+  const comment = post.comments.filter(item => item._id == req.body.commentid)
+
+  if (post) {
+    console.log(comment)
+    res.json({ post, comment })
+  }
+
+  // still working on this function. 
+  // it provides comment.
+  // needs more work.
+})
 
 exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
