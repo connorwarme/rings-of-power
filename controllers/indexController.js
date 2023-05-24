@@ -108,18 +108,20 @@ exports.friends_get = asyncHandler(async(req, res, next) => {
   return res.json({ user: req.user.user, friends_list: friends.list, friends_pending: friends.pending, friends_request: friends.request })
 })
 const alreadyFriend = (friend_list, userid) => {
+  console.log(`friend list: ${friend_list}`)
+  console.log(`userid: ${userid}`)
   let answer = false
   const friend = friend_list.list.filter(item => item == userid) 
   if (friend.length > 0) {
     answer = true
     return [answer, "User is already on your friend list."]
   }
-  const pending = user_list.pending.filter(item => item == req.body.userid)
+  const pending = friend_list.pending.filter(item => item == userid)
   if (pending.length > 0) {
     answer = true
     return [answer, "User will be added to your friend list after they accept your request."]
   }
-  const request = user_list.request.filter(item => item == req.body.userid)
+  const request = friend_list.request.filter(item => item == userid)
   if (request.length > 0) {
     answer = true
     return [answer, "User will be added to your friend list after you accept their request."]
@@ -130,14 +132,10 @@ const alreadyFriend = (friend_list, userid) => {
 exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
   // needs to check if user is already friends with other user...
   // get user's friend list
-  console.log(req.user.user)
   const user_list = await Friends.findById(req.user.user.friend_list)
-  // const friend = user_list.list.filter(item => item == req.body.userid)
-  // const pending = user_list.pending.filter(item => item == req.body.userid)
-  // const request = user_list.request.filter(item => item == req.body.userid)
-  const [answer, message] = alreadyFriend(user_list, req.body.userid)
-  if (answer) {
-    const error = new Error(message)
+  const already = alreadyFriend(user_list, req.body.userid)
+  if (already[0]) {
+    const error = new Error(already[1])
     error.status = 403
     console.log(error.message)
     res.json({ errors: error })
