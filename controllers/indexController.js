@@ -129,6 +129,8 @@ const alreadyFriend = (friend_list, userid) => {
   return answer
 }
 // these next 3 functions could be refactored...a lot of repeated code
+// need to confirm that alreadyFriends works across the board
+// then refactor these..?
 exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
   // needs to check if user is already friends with other user...
   // get user's friend list
