@@ -248,8 +248,9 @@ exports.create_post = [
 ]
 exports.delete_post = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.body.postid)
-  
-  if (req.user.user._id != post.author) {
+  if (post === null) {
+    res.json({ message: "Post not found in database."})
+  } else if (req.user.user._id != post.author) {
     res.json({ error: "You aren't the creator of this post!"})
   } else {
     await Post.findByIdAndDelete(req.body.postid)
