@@ -107,43 +107,73 @@ exports.friends_get = asyncHandler(async(req, res, next) => {
   console.log(friends)
   return res.json({ user: req.user.user, friends_list: friends.list, friends_pending: friends.pending, friends_request: friends.request })
 })
-
+const alreadyFriend = (friend_list, userid) => {
+  let answer = false
+  const friend = friend_list.list.filter(item => item == userid) 
+  if (friend.length > 0) {
+    answer = true
+    return [answer, "User is already on your friend list."]
+  }
+  const pending = user_list.pending.filter(item => item == req.body.userid)
+  if (pending.length > 0) {
+    answer = true
+    return [answer, "User will be added to your friend list after they accept your request."]
+  }
+  const request = user_list.request.filter(item => item == req.body.userid)
+  if (request.length > 0) {
+    answer = true
+    return [answer, "User will be added to your friend list after you accept their request."]
+  }
+  return answer
+}
 // these next 3 functions could be refactored...a lot of repeated code
 exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
+  // needs to check if user is already friends with other user...
   // get user's friend list
   console.log(req.user.user)
   const user_list = await Friends.findById(req.user.user.friend_list)
-  // create new friend list, but use same _id
-  const user_newlist = new Friends({
-    list: user_list.list,
-    pending: user_list.pending,
-    request: user_list.request,
-    _id: user_list._id,
-  })
-  // get other user
-  // and use populate to get friend list
-  const other_user = await User.findById(req.body.userid).populate("friend_list")
-  const other_list = other_user.friend_list
-  // get other user's friend list
-  // const other_list = await Friends.findById(other_user.friend_list)
-  // create new friend list, but use same _id
-  const other_newlist = new Friends({
-    list: other_list.list,
-    pending: other_list.pending,
-    request: other_list.request,
-    _id: other_list._id,
-  })
-  // add "friend" to user friend list: pending
-  user_newlist.pending.push(other_user._id)
-  // add "user" to other's friend list: request
-  other_newlist.request.push(req.user.user._id)
+  // const friend = user_list.list.filter(item => item == req.body.userid)
+  // const pending = user_list.pending.filter(item => item == req.body.userid)
+  // const request = user_list.request.filter(item => item == req.body.userid)
+  const [answer, message] = alreadyFriend(user_list, req.body.userid)
+  if (answer) {
+    const error = new Error(message)
+    error.status = 403
+    console.log(error.message)
+    res.json({ errors: error })
+  } else {
+    // create new friend list, but use same _id
+    const user_newlist = new Friends({
+      list: user_list.list,
+      pending: user_list.pending,
+      request: user_list.request,
+      _id: user_list._id,
+    })
+    // get other user
+    // and use populate to get friend list
+    const other_user = await User.findById(req.body.userid).populate("friend_list")
+    const other_list = other_user.friend_list
+    // get other user's friend list
+    // const other_list = await Friends.findById(other_user.friend_list)
+    // create new friend list, but use same _id
+    const other_newlist = new Friends({
+      list: other_list.list,
+      pending: other_list.pending,
+      request: other_list.request,
+      _id: other_list._id,
+    })
+    // add "friend" to user friend list: pending
+    user_newlist.pending.push(other_user._id)
+    // add "user" to other's friend list: request
+    other_newlist.request.push(req.user.user._id)
 
-  // update both lists on database
-  // !!! is this the proper way to do this?!
-  const friend_list = await Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true })
-  const other_friend_list = await Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true })
- 
-  res.json({ user: req.user.user, friend_list, other_friend_list })
+    // update both lists on database
+    // !!! is this the proper way to do this?!
+    const friend_list = await Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true })
+    const other_friend_list = await Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true })
+  
+    res.json({ user: req.user.user, friend_list, other_friend_list })
+  }
 })
 exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
   // get user's friend list
