@@ -37,6 +37,7 @@ router.post('/createpost', index_controller.verifyToken, index_controller.create
 router.post('/deletepost', index_controller.verifyToken, index_controller.delete_post)
 router.post('/likepost', index_controller.verifyToken, index_controller.like_post)
 router.post('/unlikepost', index_controller.verifyToken, index_controller.unlike_post)
+router.post('/addcomment', index_controller.verifyToken, index_controller.add_comment_post)
 
 
 module.exports = router;

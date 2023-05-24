@@ -304,6 +304,29 @@ exports.unlike_post = asyncHandler(async (req, res, next) => {
     res.json({ post })
   }
 })
+exports.add_comment_post = [
+  body("content", "Comment requires text.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req)
+
+    const comment = {
+      author: req.user.user._id,
+      content: req.body.content,
+    }
+    if (!errors.isEmpty()) {
+      res.json({ errors })
+    } else {
+      const post = await Post.findById(req.body.postid)
+      post.comments.push(comment)
+      await post.save()
+      res.json({ post })
+    }
+  })
+]
 
 exports.verifyToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
