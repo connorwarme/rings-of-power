@@ -14,12 +14,12 @@ exports.login_get = asyncHandler(async (req, res, next) => {
 exports.login_post = (req, res, next) => {
   passport.authenticate("local", { session: false}, (err, user, info) => {
     if (err) {
-      return res.render("error", { error: err })
+      return res.json({ errors: err })
     }
     if (user === false) {
       const error = new Error("User not found!")
-      error.status = 401
-      return res.render("error", { error: error })
+      error.status = 404
+      return res.json({ errors: error })
     } else {
       const token = jwt.sign({ user }, process.env.JWT_KEY)
       return res.json({ user, token })
@@ -76,11 +76,7 @@ exports.signup_post = [
         friend_list: friendlist._id,
       })
       if (!errors.isEmpty()) {
-        res.render("signup", {
-          title: "Sign Up",
-          user,
-          errors: errors.array(),
-        })
+        res.json({ errors: errors.array(), user })
         return
       } else {
         const emailExists = await User.findOne({ email: req.body.email }).exec()
@@ -88,11 +84,7 @@ exports.signup_post = [
           const error = new Error("Email address already associated with an account!")
           error.status = 404 
           console.log(error.message)
-          res.render("signup", {
-            title: "Sign Up",
-            user,
-            error: error,
-          })
+          res.json({ errors: error, user })
         } else {
           await friendlist.save()
           await user.save()
@@ -249,9 +241,13 @@ exports.create_post = [
 exports.delete_post = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.body.postid)
   if (post === null) {
-    res.json({ message: "Post not found in database."})
+    const error = new Error("Post not found in database.")
+    error.status = 404
+    res.json({ errors: error })
   } else if (req.user.user._id != post.author) {
-    res.json({ error: "You aren't the creator of this post!"})
+    const error = new Error("You aren't the creator of this post!")
+    error.status = 403
+    res.json({ errors: error })
   } else {
     await Post.findByIdAndDelete(req.body.postid)
     res.json({ message: "Successfully deleted post."})
@@ -273,7 +269,9 @@ exports.like_post = asyncHandler(async (req, res, next) => {
     return value
   }
   if (likes()) {
-    res.json({ "error": "You already like this post..."})
+    const error = new Error("You already like this post...")
+    error.status = 401
+    res.json({ errors: error })
   } else {
     post.likes.push({ author: req.user.user._id })
     await post.save()
@@ -297,7 +295,9 @@ exports.unlike_post = asyncHandler(async (req, res, next) => {
   }
   const like = likes()
   if (like == 0) {
-    res.json({ "error": "You can't unlike a post you haven't liked to begin with!"})
+    const error = new Error("You can't unlike a post you haven't liked to begin with!")
+    error.status = 401
+    res.json({ errors: error })
   } else {
     post.likes = post.likes.filter(item => item.author != req.user.user._id)
     await post.save()
@@ -335,7 +335,6 @@ exports.delete_comment_post = asyncHandler(async (req, res, next) => {
   if (comment.length == 0) {
     const error = new Error("Could not find comment in database.")
     error.status = 404
-    console.log(error.message)
     res.json({ errors: error })
   } else if (comment[0].author != req.user.user._id) {
     const error = new Error("You are not the author of this comment.")
@@ -372,7 +371,9 @@ exports.verifyNoToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
   if (token != null) {
-    res.json({ message: "You are already a user!"})
+    const error = new Error("You are already a user!")
+    error.status = 403
+    res.json({ errors: error })
   }
   next()
 }
