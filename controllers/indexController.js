@@ -335,6 +335,7 @@ exports.delete_comment_post = asyncHandler(async (req, res, next) => {
   if (comment.length == 0) {
     const error = new Error("Could not find comment in database.")
     error.status = 404
+    console.log(error.message)
     res.json({ errors: error })
   } else if (comment[0].author != req.user.user._id) {
     const error = new Error("You are not the author of this comment.")
@@ -354,13 +355,13 @@ exports.verifyToken = (req, res, next) => {
     // !!! need user to sign in to access page content
     const error = new Error("No token found.")
     error.status = 401
-    return res.render("error", { error: error })
+    return res.json({ errors: error })
   }
   jwt.verify(token, process.env.JWT_KEY, (err, user) => {
     if (err) {
       const error = new Error("You don't have proper clearance :/")
-      error.status = 402
-      return res.render("error", { error: error })
+      error.status = 403
+      return res.json({ errors: error })
     }
     req.user = user
     req.token = token
