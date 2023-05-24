@@ -246,6 +246,16 @@ exports.create_post = [
     }
   })
 ]
+exports.delete_post = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.body.postid)
+  
+  if (req.user.user._id != post.author) {
+    res.json({ error: "You aren't the creator of this post!"})
+  } else {
+    await Post.findByIdAndDelete(req.body.postid)
+    res.json({ message: "Successfully deleted post."})
+  }
+})
 exports.like_post = asyncHandler(async (req, res, next) => {
   // query post, check likes array
   // if user already liked, don't allow
