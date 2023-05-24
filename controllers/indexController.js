@@ -121,10 +121,11 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
     _id: user_list._id,
   })
   // get other user
-  const other_user = await User.findById(req.body.userid)
-  console.log(other_user)
+  // and use populate to get friend list
+  const other_user = await User.findById(req.body.userid).populate("friend_list")
+  const other_list = other_user.friend_list
   // get other user's friend list
-  const other_list = await Friends.findById(other_user.friend_list)
+  // const other_list = await Friends.findById(other_user.friend_list)
   // create new friend list, but use same _id
   const other_newlist = new Friends({
     list: other_list.list,
