@@ -259,16 +259,17 @@ exports.like_post = asyncHandler(async (req, res, next) => {
   // otherwise, add user id to likes array
   const post = await Post.findById(req.body.postid)
   // is there a simpler way to do this? (check for preexisting like by user..)
-  const likes = () => {
-    let value = 0
-    post.likes.forEach(like => {
-      if (like.author == req.user.user._id) {
-        value++
-      }
-    })
-    return value
-  }
-  if (likes()) {
+  // const likes = () => {
+  //   let value = 0
+  //   post.likes.forEach(like => {
+  //     if (like.author == req.user.user._id) {
+  //       value++
+  //     }
+  //   })
+  //   return value
+  // }
+  const likes = post.likes.filter(item => item.author == req.user.user._id)
+  if (likes.length > 0) {
     const error = new Error("You already like this post...")
     error.status = 401
     res.json({ errors: error })
@@ -284,17 +285,18 @@ exports.unlike_post = asyncHandler(async (req, res, next) => {
   // otherwise, remove user id from likes array
   const post = await Post.findById(req.body.postid) 
   console.log(post)
-  const likes = () => {
-    let value = 0
-    post.likes.forEach(like => {
-      if (like.author == req.user.user._id) {
-        value++
-      }
-    })
-    return value
-  }
-  const like = likes()
-  if (like == 0) {
+  // const likes = () => {
+  //   let value = 0
+  //   post.likes.forEach(like => {
+  //     if (like.author == req.user.user._id) {
+  //       value++
+  //     }
+  //   })
+  //   return value
+  // }
+  // const like = likes()
+  const likes = post.likes.filter(item => item.author == req.user.user._id)
+  if (likes.length == 0) {
     const error = new Error("You can't unlike a post you haven't liked to begin with!")
     error.status = 401
     res.json({ errors: error })
