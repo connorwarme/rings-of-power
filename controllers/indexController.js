@@ -98,10 +98,11 @@ exports.signup_post = [
   })
 ]
 
-exports.profile_get = (req, res, next) => {
+exports.profile_get = asyncHandler(async(req, res, next) => {
+  const posts = await Post.find({ author: req.user.user._id }).exec()
   // add a query to fetch user's posts, if any
-  return res.json({ user: req.user.user })
-}
+  return res.json({ user: req.user.user, posts })
+})
 // should these two be bunched together? 
 // would make for only one db query, and just return an allposts and a someposts...
 exports.posts_all_get = asyncHandler(async(req, res, next) => {
