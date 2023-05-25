@@ -107,6 +107,15 @@ exports.posts_all_get = asyncHandler(async(req, res, next) => {
   const posts = await Post.find({}).exec()
   res.json({ posts })
 })
+exports.posts_other_get = asyncHandler(async(req, res, next) => {
+  const posts = await Post.find({}).exec()
+  const others = posts.filter(item => {
+    console.log(item.author)
+    console.log(req.user.user._id)
+    return item.author != req.user.user._id
+  })
+  res.json({ posts: others })
+})
 
 exports.friends_get = asyncHandler(async(req, res, next) => {
   const friends = await Friends.findById(req.user.user.friend_list).exec()
