@@ -99,6 +99,7 @@ exports.signup_post = [
 ]
 
 exports.profile_get = (req, res, next) => {
+  // add a query to fetch user's posts, if any
   return res.json({ user: req.user.user })
 }
 
@@ -134,7 +135,7 @@ const alreadyFriend = (friend_list, userid) => {
 exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
   // needs to check if user is already friends with other user...
   // get user's friend list
-  const user_list = await Friends.findById(req.user.user.friend_list)
+  const user_list = await Friends.findById(req.user.user.friend_list).exec()
   const already = alreadyFriend(user_list, req.body.userid)
   if (already[0]) {
     const error = new Error(already[1])
@@ -151,7 +152,7 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
     })
     // get other user
     // and use populate to get friend list
-    const other_user = await User.findById(req.body.userid).populate("friend_list")
+    const other_user = await User.findById(req.body.userid).populate("friend_list").exec()
     const other_list = other_user.friend_list
     // get other user's friend list
     // const other_list = await Friends.findById(other_user.friend_list)
@@ -169,15 +170,15 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
 
     // update both lists on database
     // !!! is this the proper way to do this?!
-    const friend_list = await Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true })
-    const other_friend_list = await Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true })
+    const friend_list = await Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true }).exec()
+    const other_friend_list = await Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true }).exec()
   
     res.json({ user: req.user.user, friend_list, other_friend_list })
   }
 })
 exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
   // get user's friend list
-  const user_list = await Friends.findById(req.user.user.friend_list)
+  const user_list = await Friends.findById(req.user.user.friend_list).exec()
   const user_newlist = new Friends({
     list: user_list.list,
     pending: user_list.pending,
@@ -185,8 +186,8 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
     _id: user_list._id,
   })
   // get other user's friend list
-  const other_user = await User.findById(req.body.userid)
-  const other_list = await Friends.findById(other_user.friend_list)
+  const other_user = await User.findById(req.body.userid).exec()
+  const other_list = await Friends.findById(other_user.friend_list).exec()
   const other_newlist = new Friends({
     list: other_list.list,
     pending: other_list.pending,
@@ -202,8 +203,8 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
   other_newlist.pending = other_list.pending.filter(id => id != req.user.user._id)
   // update both lists on the database
   const [userList, otherList] = await Promise.all([
-    Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true }),
-    Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true }),
+    Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true }).exec(),
+    Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true }).exec(),
   ])
 
   // not complete, needs to be thoroughly checked. 
@@ -213,7 +214,7 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
 
 exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
     // get user's friend list
-    const user_list = await Friends.findById(req.user.user.friend_list)
+    const user_list = await Friends.findById(req.user.user.friend_list).exec()
     const user_newlist = new Friends({
       list: user_list.list,
       pending: user_list.pending,
@@ -221,8 +222,8 @@ exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
       _id: user_list._id,
     })
     // get other user's friend list
-    const other_user = await User.findById(req.body.userid)
-    const other_list = await Friends.findById(other_user.friend_list)
+    const other_user = await User.findById(req.body.userid).exec()
+    const other_list = await Friends.findById(other_user.friend_list).exec()
     const other_newlist = new Friends({
       list: other_list.list,
       pending: other_list.pending,
@@ -236,8 +237,8 @@ exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
     other_newlist.pending = other_list.pending.filter(id => id != req.user.user._id)
     // update both lists on the database
     const [userList, otherList] = await Promise.all([
-      Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true }),
-      Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true }),
+      Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true }).exec(),
+      Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true }).exec(),
     ]) 
   
     res.json({ user: req.user.user, userList, otherList })
@@ -270,7 +271,7 @@ exports.create_post = [
   })
 ]
 exports.delete_post = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.body.postid)
+  const post = await Post.findById(req.body.postid).exec()
   if (post === null) {
     const error = new Error("Post not found in database.")
     error.status = 404
@@ -288,7 +289,7 @@ exports.like_post = asyncHandler(async (req, res, next) => {
   // query post, check likes array
   // if user already liked, don't allow
   // otherwise, add user id to likes array
-  const post = await Post.findById(req.body.postid)
+  const post = await Post.findById(req.body.postid).exec()
   // is there a simpler way to do this? (check for preexisting like by user..)
   // const likes = () => {
   //   let value = 0
@@ -314,7 +315,7 @@ exports.unlike_post = asyncHandler(async (req, res, next) => {
   // query post, check likes array 
   // if user doesn't already like, don't allow
   // otherwise, remove user id from likes array
-  const post = await Post.findById(req.body.postid) 
+  const post = await Post.findById(req.body.postid).exec()
   console.log(post)
   // const likes = () => {
   //   let value = 0
@@ -353,7 +354,7 @@ exports.add_comment_post = [
     if (!errors.isEmpty()) {
       res.json({ errors })
     } else {
-      const post = await Post.findById(req.body.postid)
+      const post = await Post.findById(req.body.postid).exec()
       post.comments.push(comment)
       await post.save()
       res.json({ post })
@@ -361,7 +362,7 @@ exports.add_comment_post = [
   })
 ]
 exports.delete_comment_post = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.body.postid)
+  const post = await Post.findById(req.body.postid).exec()
   // would it be easiest to pass thru comment id in order to delete it specifically?
   const comment = post.comments.filter(item => item._id == req.body.commentid)
   console.log(comment)
