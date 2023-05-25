@@ -122,8 +122,6 @@ exports.friends_get = asyncHandler(async(req, res, next) => {
   return res.json({ user: req.user.user, friends_list: friends.list, friends_pending: friends.pending, friends_request: friends.request })
 })
 const alreadyFriend = (friend_list, userid) => {
-  console.log(`friend list: ${friend_list}`)
-  console.log(`userid: ${userid}`)
   let answer = false
   const friend = friend_list.list.filter(item => item == userid) 
   if (friend.length > 0) {
@@ -153,7 +151,6 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
   if (already[0]) {
     const error = new Error(already[1])
     error.status = 403
-    console.log(error.message)
     res.json({ errors: error })
   } else {
     // create new friend list, but use same _id
@@ -303,16 +300,6 @@ exports.like_post = asyncHandler(async (req, res, next) => {
   // if user already liked, don't allow
   // otherwise, add user id to likes array
   const post = await Post.findById(req.body.postid).exec()
-  // is there a simpler way to do this? (check for preexisting like by user..)
-  // const likes = () => {
-  //   let value = 0
-  //   post.likes.forEach(like => {
-  //     if (like.author == req.user.user._id) {
-  //       value++
-  //     }
-  //   })
-  //   return value
-  // }
   const likes = post.likes.filter(item => item.author == req.user.user._id)
   if (likes.length > 0) {
     const error = new Error("You already like this post...")
@@ -329,17 +316,6 @@ exports.unlike_post = asyncHandler(async (req, res, next) => {
   // if user doesn't already like, don't allow
   // otherwise, remove user id from likes array
   const post = await Post.findById(req.body.postid).exec()
-  console.log(post)
-  // const likes = () => {
-  //   let value = 0
-  //   post.likes.forEach(like => {
-  //     if (like.author == req.user.user._id) {
-  //       value++
-  //     }
-  //   })
-  //   return value
-  // }
-  // const like = likes()
   const likes = post.likes.filter(item => item.author == req.user.user._id)
   if (likes.length == 0) {
     const error = new Error("You can't unlike a post you haven't liked to begin with!")
@@ -378,7 +354,6 @@ exports.delete_comment_post = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.body.postid).exec()
   // would it be easiest to pass thru comment id in order to delete it specifically?
   const comment = post.comments.filter(item => item._id == req.body.commentid)
-  console.log(comment)
   if (comment.length == 0) {
     const error = new Error("Could not find comment in database.")
     error.status = 404
