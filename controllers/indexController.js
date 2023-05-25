@@ -27,6 +27,13 @@ exports.login_post = (req, res, next) => {
   })(req, res, next)
 }
 
+// learn how to incorporate oauth w/ facebook and google
+// do i need to change my user schema?
+//      do i need to do a verify email?
+// how do I add the options to the passport.authenticate fn? aka differentiate between
+// how to organize/structure this new code (separate folders for local, fb, google?)
+
+
 exports.signup_get = asyncHandler(async (req, res, next) => {
   res.render("signup", { title: "Signup" })
 })
@@ -100,7 +107,6 @@ exports.signup_post = [
 
 exports.profile_get = asyncHandler(async(req, res, next) => {
   const posts = await Post.find({ author: req.user.user._id }).exec()
-  // add a query to fetch user's posts, if any
   return res.json({ user: req.user.user, posts })
 })
 // should these two be bunched together? 
@@ -164,8 +170,6 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
     // and use populate to get friend list
     const other_user = await User.findById(req.body.userid).populate("friend_list").exec()
     const other_list = other_user.friend_list
-    // get other user's friend list
-    // const other_list = await Friends.findById(other_user.friend_list)
     // create new friend list, but use same _id
     const other_newlist = new Friends({
       list: other_list.list,
@@ -174,6 +178,7 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
       _id: other_list._id,
     })
     // add "friend" to user friend list: pending
+    // does this need to be toString()?
     user_newlist.pending.push(other_user._id)
     // add "user" to other's friend list: request
     other_newlist.request.push(req.user.user._id)
@@ -195,6 +200,11 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
     request: user_list.request,
     _id: user_list._id,
   })
+  // is request in request array?
+  // just to check and confirm that other user actually requested to be friends
+  // not that the user figured out how to trick my backend...
+
+  // need to create new amity user (somehow her friend_list was deleted, then can test this properly)
   // get other user's friend list
   const other_user = await User.findById(req.body.userid).exec()
   const other_list = await Friends.findById(other_user.friend_list).exec()
@@ -207,7 +217,7 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
 
   // add friend to user list, remove from request list
   user_newlist.list.push(other_user._id.toString())
-  user_newlist.request = user_list.request.filter(id => id != other_user._id.toString())
+  user_newlist.request = user_list.request.filter(id => id != other_user._id)
   // add friend to other list, remove from pending list
   other_newlist.list.push(req.user.user._id)
   other_newlist.pending = other_list.pending.filter(id => id != req.user.user._id)
