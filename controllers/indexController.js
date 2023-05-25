@@ -103,6 +103,11 @@ exports.profile_get = (req, res, next) => {
   return res.json({ user: req.user.user })
 }
 
+exports.posts_all_get = asyncHandler(async(req, res, next) => {
+  const posts = await Post.find({}).exec()
+  res.json({ posts })
+})
+
 exports.friends_get = asyncHandler(async(req, res, next) => {
   const friends = await Friends.findById(req.user.user.friend_list).exec()
   console.log(friends)
