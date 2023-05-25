@@ -102,7 +102,8 @@ exports.profile_get = (req, res, next) => {
   // add a query to fetch user's posts, if any
   return res.json({ user: req.user.user })
 }
-
+// should these two be bunched together? 
+// would make for only one db query, and just return an allposts and a someposts...
 exports.posts_all_get = asyncHandler(async(req, res, next) => {
   const posts = await Post.find({}).exec()
   res.json({ posts })
@@ -110,8 +111,6 @@ exports.posts_all_get = asyncHandler(async(req, res, next) => {
 exports.posts_other_get = asyncHandler(async(req, res, next) => {
   const posts = await Post.find({}).exec()
   const others = posts.filter(item => {
-    console.log(item.author)
-    console.log(req.user.user._id)
     return item.author != req.user.user._id
   })
   res.json({ posts: others })
@@ -119,7 +118,6 @@ exports.posts_other_get = asyncHandler(async(req, res, next) => {
 
 exports.friends_get = asyncHandler(async(req, res, next) => {
   const friends = await Friends.findById(req.user.user.friend_list).exec()
-  console.log(friends)
   return res.json({ user: req.user.user, friends_list: friends.list, friends_pending: friends.pending, friends_request: friends.request })
 })
 const alreadyFriend = (friend_list, userid) => {
