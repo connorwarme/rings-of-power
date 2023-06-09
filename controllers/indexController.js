@@ -178,7 +178,6 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
       _id: other_list._id,
     })
     // add "friend" to user friend list: pending
-    // does this need to be toString()?
     user_newlist.pending.push(other_user._id)
     // add "user" to other's friend list: request
     other_newlist.request.push(req.user.user._id)
@@ -225,9 +224,7 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
   const [userList, otherList] = await Promise.all([
     Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true }).exec(),
     Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true }).exec(),
-  ])
-
-  // not complete, needs to be thoroughly checked. 
+  ]) 
 
   res.json({ user: req.user.user, userList, otherList })
 })
