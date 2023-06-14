@@ -17,7 +17,7 @@ const userRouter = require('./routes/user');
 
 const app = express();
 
-// view engine setup
+// set up view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
 
@@ -36,6 +36,7 @@ app.use(passport.session())
 //   next()
 // })
 
+// set up routes
 app.use('/', indexRouter);
 app.use('/auth', authRouter)
 app.use('/user', userRouter);

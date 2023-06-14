@@ -16,5 +16,21 @@ router.get("/facebook", (req, res) => {
     message: "logging in with facebook",
   })
 })
+router.get("/facebook/cb", (req, res) => {
+  res.json({
+    message: "facebook callback - check if user already has account in db or if need to create one",
+  })
+})
+
+router.get("/google", (req, res) => {
+  res.json({
+    message: "logging in with google",
+  })
+})
+router.get("/google/cb", (req, res) => {
+  res.json({
+    message: "google callback - check if user already has account in db or if need to create one",
+  })
+})
 
 module.exports = router
