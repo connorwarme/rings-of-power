@@ -16,8 +16,19 @@ const facebook = {
   clientSecret: process.env.FB_APP_KEY,
   //todo: based on env, change url to localhost, dev or prod
   callbackURL: "http://localhost:3000/auth/login/facebook/callback",
+  //todo: do I need state?
+  state: true,
+  //todo: don't know if I need proof - what is it? what does it do?
   enableProof: true, //to enable secret proof
   profileFields: ['id', 'emails', 'name'] //scope of fields
+}
+// might be able to build this into facebook strategy fn
+const formatFB = (profile) => {
+  return {
+    first_name: profile.first_name,
+    family_name: profile.last_name,
+    email: profile.email,
+  }
 }
 
 // const google = {
@@ -27,19 +38,20 @@ const facebook = {
 //   callbackURL: "http://localhost:3000/auth/login/google/callback"
 // }
 
-export const initPassport = (app) => {
-  app.use(
-    session({
-      resave: false,
-      saveUninitialized: true,
-      secret: process.env.SECRET,
-    })
-  );
-  //init passport
-  app.use(passport.initialize());
-  app.use(passport.session());
-}
+// export const initPassport = (app) => {
+//   app.use(
+//     session({
+//       resave: false,
+//       saveUninitialized: true,
+//       secret: process.env.SECRET,
+//     })
+//   );
+//   //init passport
+//   app.use(passport.initialize());
+//   app.use(passport.session());
+// }
 
+// for local sign-in
 passport.use(
   new LocalStrategy({
     usernameField: 'email',
@@ -63,6 +75,18 @@ passport.use(
       return done(err)
     }
   })
+)
+// for facebook oauth
+passport.use(
+  new FacebookStrategy(
+    facebook,
+    // need to set session to false? 
+    async (accessToken, refreshToken, profile, done) => {
+       console.log(profile);
+      //done(err, user) will return the user we got from fb
+      done(null, formatFB(profile._json));
+    }
+  )
 )
 
 passport.serializeUser(function(user, done) {
