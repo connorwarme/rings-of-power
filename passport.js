@@ -2,12 +2,43 @@ require("dotenv").config()
 
 const passport = require("passport")
 const LocalStrategy = require('passport-local').Strategy
+const FacebookStrategy = require('passport-facebook')
 const passportJWT = require('passport-jwt')
 const JwtStrategy = passportJWT.Strategy
 const ExtractJWT = passportJWT.ExtractJwt
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
+const session = require("express-session")
 const User = require('./models/user')
+
+const facebook = {
+  clientID: process.env.FB_APP_ID,
+  clientSecret: process.env.FB_APP_KEY,
+  //todo: based on env, change url to localhost, dev or prod
+  callbackURL: "http://localhost:3000/auth/login/facebook/callback",
+  enableProof: true, //to enable secret proof
+  profileFields: ['id', 'emails', 'name'] //scope of fields
+}
+
+// const google = {
+//   clientID: process.env.G_APP_ID,
+//   clientSecret: process.env.G_APP_KEY,
+//   //todo: based on env, change url to localhost, dev or prod
+//   callbackURL: "http://localhost:3000/auth/login/google/callback"
+// }
+
+export const initPassport = (app) => {
+  app.use(
+    session({
+      resave: false,
+      saveUninitialized: true,
+      secret: process.env.SECRET,
+    })
+  );
+  //init passport
+  app.use(passport.initialize());
+  app.use(passport.session());
+}
 
 passport.use(
   new LocalStrategy({
