@@ -34,7 +34,7 @@ const formatFB = (profile) => {
 
 const google = {
   //todo: based on env, change url to localhost, dev or prod
-  callbackURL: "/auth/google/redirect",
+  callbackURL: "http://localhost:3000/auth/google/redirect",
   clientID: process.env.G_APP_ID,
   clientSecret: process.env.G_APP_KEY,
 }
@@ -81,8 +81,10 @@ passport.use(
   new GoogleStrategy(
     // options for google oauth
     google, 
-    () => {
+    async (accessToken, refreshToken, profile, done) => {
     // passport callback function
+    console.log('fired passport-google callback function')
+    console.log(profile)
   })
 )
 

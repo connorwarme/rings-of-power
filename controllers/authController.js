@@ -32,3 +32,17 @@ exports.login_fb_get = (req, res, next) => {
 exports.login_google = (req, res, next) => {
   passport.authenticate('google', { scope: ['profile'] })(req, res, next)
 }
+
+exports.login_google_redirect = (req, res, next) => {
+  passport.authenticate('google', () => {
+    console.log('working, i think?')
+  })(req, res, next);
+  // hangs, because i still need to do something with it. 
+  // part of it needs to happen in the strategy (find user or create user or send back error)
+  // part of it happens here -> if error, do this; if success, do this
+}
+  // (req, res, next) => {
+  //   res.json({
+  //     message: 'google callback - should have access to user profile now!'
+  //   })
+  // }
