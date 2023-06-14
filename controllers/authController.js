@@ -3,11 +3,10 @@ const asyncHandler = require("express-async-handler")
 const { body, validationResult } = require("express-validator")
 const bcrypt = require("bcryptjs")
 const passport = require("passport")
-const FacebookStrategy = require("passport-facebook")
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
 
-exports.login_get = asyncHandler(async (req, res, next) => {
+exports.login = asyncHandler(async (req, res, next) => {
   res.status(200).json({ title: "Login on auth!" })
 })
 
@@ -28,4 +27,8 @@ exports.login_fb_get = (req, res, next) => {
   //     return res.json({ user, token })
   //   }
   // })(req, res, next)
+}
+
+exports.login_google = (req, res, next) => {
+  passport.authenticate('google', { scope: ['profile'] })(req, res, next)
 }

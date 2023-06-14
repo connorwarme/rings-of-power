@@ -33,24 +33,11 @@ const formatFB = (profile) => {
 }
 
 const google = {
-  clientID: process.env.G_APP_ID,
-  clientSecret: process.env.G_APP_KEY,
   //todo: based on env, change url to localhost, dev or prod
   callbackURL: "/auth/google/redirect",
+  clientID: process.env.G_APP_ID,
+  clientSecret: process.env.G_APP_KEY,
 }
-
-// export const initPassport = (app) => {
-//   app.use(
-//     session({
-//       resave: false,
-//       saveUninitialized: true,
-//       secret: process.env.SECRET,
-//     })
-//   );
-//   //init passport
-//   app.use(passport.initialize());
-//   app.use(passport.session());
-// }
 
 // for local sign-in
 passport.use(
@@ -91,11 +78,12 @@ passport.use(
 )
 // for google oauth
 passport.use(
-  new GoogleStrategy({
+  new GoogleStrategy(
     // options for google oauth
-  }), () => {
+    google, 
+    () => {
     // passport callback function
-  }
+  })
 )
 
 passport.serializeUser(function(user, done) {
