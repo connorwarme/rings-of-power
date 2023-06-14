@@ -3,6 +3,7 @@ require("dotenv").config()
 const passport = require("passport")
 const LocalStrategy = require('passport-local').Strategy
 const FacebookStrategy = require('passport-facebook')
+const GoogleStrategy = require('passport-google-oauth20')
 const passportJWT = require('passport-jwt')
 const JwtStrategy = passportJWT.Strategy
 const ExtractJWT = passportJWT.ExtractJwt
@@ -15,7 +16,7 @@ const facebook = {
   clientID: process.env.FB_APP_ID,
   clientSecret: process.env.FB_APP_KEY,
   //todo: based on env, change url to localhost, dev or prod
-  callbackURL: "http://localhost:3000/auth/login/facebook/callback",
+  callbackURL: "/auth/facebook/redirect",
   //todo: do I need state?
   state: true,
   //todo: don't know if I need proof - what is it? what does it do?
@@ -31,12 +32,12 @@ const formatFB = (profile) => {
   }
 }
 
-// const google = {
-//   clientID: process.env.G_APP_ID,
-//   clientSecret: process.env.G_APP_KEY,
-//   //todo: based on env, change url to localhost, dev or prod
-//   callbackURL: "http://localhost:3000/auth/login/google/callback"
-// }
+const google = {
+  clientID: process.env.G_APP_ID,
+  clientSecret: process.env.G_APP_KEY,
+  //todo: based on env, change url to localhost, dev or prod
+  callbackURL: "/auth/google/redirect",
+}
 
 // export const initPassport = (app) => {
 //   app.use(
@@ -87,6 +88,14 @@ passport.use(
       done(null, formatFB(profile._json));
     }
   )
+)
+// for google oauth
+passport.use(
+  new GoogleStrategy({
+    // options for google oauth
+  }), () => {
+    // passport callback function
+  }
 )
 
 passport.serializeUser(function(user, done) {
