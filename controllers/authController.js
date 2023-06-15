@@ -30,7 +30,7 @@ exports.login_fb_get = (req, res, next) => {
 }
 
 exports.login_google = (req, res, next) => {
-  passport.authenticate('google', { scope: ['profile', 'email'] })(req, res, next)
+  passport.authenticate('google', { scope: [ 'profile' ] })(req, res, next)
 }
 
 exports.login_google_redirect = (req, res, next) => {

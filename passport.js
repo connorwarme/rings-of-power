@@ -35,7 +35,7 @@ const formatFB = (profile) => {
 
 const google = {
   //todo: based on env, change url to localhost, dev or prod
-  callbackURL: "http://localhost:3000/auth/google/redirect",
+  callbackURL: "/auth/google/redirect",
   clientID: process.env.G_APP_ID,
   clientSecret: process.env.G_APP_KEY,
 }
@@ -83,31 +83,33 @@ passport.use(
     // options for google oauth
     google, 
     async(accessToken, refreshToken, profile, done) => {
-      try {
-        const user = await User.findOne({ email: profile.email })
-        if (!user) {
-          console.log('user not found, creating new one')
-          const friendList = new Friends({
-            list: [],
-            pending: [],
-            request: [],
-          })
-          const newUser = new User({
-            first_name: profile.given_name,
-            family_name: profile.family_name,
-            email: profile.email,
-            hash: `need to update model so hash isn't required`,
-            friend_list: friendList,
-          })
-          await friendList.save()
-          await newUser.save()
-          return done(null, newUser, { message: "Welcome! User profile created" })
-        }
-        return done(null, user, { message: "Welcome back!" })
-      } catch (err) {
-        console.log(err)
-        return done(err)
-      }
+      console.log(profile)
+      done(null, profile._json)
+      // try {
+      //   const user = await User.findOne({ email: profile._json.email })
+      //   if (!user) {
+      //     console.log('user not found, creating new one')
+      //     const friendList = new Friends({
+      //       list: [],
+      //       pending: [],
+      //       request: [],
+      //     })
+      //     const newUser = new User({
+      //       first_name: profile.given_name,
+      //       family_name: profile.family_name,
+      //       email: profile.email,
+      //       hash: `need to update model so hash isn't required`,
+      //       friend_list: friendList,
+      //     })
+      //     await friendList.save()
+      //     await newUser.save()
+      //     return done(null, newUser, { message: "Welcome! User profile created" })
+      //   }
+      //   return done(null, user, { message: "Welcome back!" })
+      // } catch (err) {
+      //   console.log(err)
+      //   return done(err)
+      // }
     }
   )
 )
