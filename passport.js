@@ -39,6 +39,15 @@ const google = {
   clientID: process.env.G_APP_ID,
   clientSecret: process.env.G_APP_KEY,
 }
+const formatG = (profile) => {
+  return {
+    first_name: profile.given_name,
+    family_name: profile.family_name,
+    email: profile.email,
+    picture: profile.picture,
+    googleid: profile.sub
+  }
+}
 
 // for local sign-in
 passport.use(
@@ -84,7 +93,7 @@ passport.use(
     google, 
     async(accessToken, refreshToken, profile, done) => {
       console.log(profile)
-      done(null, profile._json)
+      done(null, formatG(profile._json))
       // try {
       //   const user = await User.findOne({ email: profile._json.email })
       //   if (!user) {
