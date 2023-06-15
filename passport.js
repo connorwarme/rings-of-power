@@ -11,6 +11,7 @@ const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const session = require("express-session")
 const User = require('./models/user')
+const Friends = require("./models/friends")
 
 const facebook = {
   clientID: process.env.FB_APP_ID,
@@ -81,11 +82,34 @@ passport.use(
   new GoogleStrategy(
     // options for google oauth
     google, 
-    async (accessToken, refreshToken, profile, done) => {
-    // passport callback function
-    console.log('fired passport-google callback function')
-    console.log(profile)
-  })
+    async(accessToken, refreshToken, profile, done) => {
+      try {
+        const user = await User.findOne({ email: profile.email })
+        if (!user) {
+          console.log('user not found, creating new one')
+          const friendList = new Friends({
+            list: [],
+            pending: [],
+            request: [],
+          })
+          const newUser = new User({
+            first_name: profile.given_name,
+            family_name: profile.family_name,
+            email: profile.email,
+            hash: `need to update model so hash isn't required`,
+            friend_list: friendList,
+          })
+          await friendList.save()
+          await newUser.save()
+          return done(null, newUser, { message: "Welcome! User profile created" })
+        }
+        return done(null, user, { message: "Welcome back!" })
+      } catch (err) {
+        console.log(err)
+        return done(err)
+      }
+    }
+  )
 )
 
 passport.serializeUser(function(user, done) {
