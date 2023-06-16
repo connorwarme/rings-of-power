@@ -80,9 +80,32 @@ passport.use(
     facebook,
     // need to set session to false? 
     async (accessToken, refreshToken, profile, done) => {
-       console.log(profile);
-      //done(err, user) will return the user we got from fb
-      done(null, formatFB(profile._json));
+       const fbUser = formatFB(profile._json)
+       try {
+        const user = await User.findOne({ email: fbUser.email })
+        if (!user) {
+          console.log('user not found, creating new one')
+          const friendList = new Friends({
+            list: [],
+            pending: [],
+            request: [],
+          })
+          const newUser = new User({
+            first_name: fbUser.first_name,
+            family_name: fbUser.family_name,
+            email: fbUser.email,
+            hash: `need to update model so hash isn't required`,
+            friend_list: friendList,
+          })
+          await friendList.save()
+          await newUser.save()
+          return done(null, newUser, { message: "Welcome! User profile created" })
+        }
+        return done(null, user, { message: "Welcome back!" })
+      } catch (err) {
+        console.log(err)
+        return done(err)
+      }
     }
   )
 )
