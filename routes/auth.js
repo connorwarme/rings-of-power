@@ -11,16 +11,9 @@ router.get("/logout", (req, res) => {
   })
 })
 
-router.get("/facebook", (req, res) => {
-  res.json({
-    message: "logging in with facebook",
-  })
-})
-router.get("/facebook/redirect", (req, res) => {
-  res.json({
-    message: "facebook callback - check if user already has account in db or if need to create one",
-  })
-})
+router.get("/facebook", auth_controller.login_facebook)
+
+router.get("/facebook/redirect", auth_controller.login_facebook_redirect)
 
 router.get("/google", auth_controller.login_google)
 
