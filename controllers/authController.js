@@ -30,7 +30,7 @@ exports.login_fb_get = (req, res, next) => {
 }
 
 exports.login_google = (req, res, next) => {
-  passport.authenticate('google', { scope: [ 'profile' ] })(req, res, next)
+  passport.authenticate('google', { scope: [ 'profile', 'email' ] })(req, res, next)
 }
 
 exports.login_google_redirect = (req, res, next) => {
@@ -40,7 +40,7 @@ exports.login_google_redirect = (req, res, next) => {
       return res.json({ errors: err })
     } else {
       const token = jwt.sign({ user }, process.env.JWT_KEY)
-      return res.json({ user, token })
+      return res.json({ user, token, info })
     }
   })(req, res, next);
   // hangs, because i still need to do something with it. 

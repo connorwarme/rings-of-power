@@ -92,33 +92,32 @@ passport.use(
     // options for google oauth
     google, 
     async(accessToken, refreshToken, profile, done) => {
-      console.log(profile)
-      done(null, formatG(profile._json))
-      // try {
-      //   const user = await User.findOne({ email: profile._json.email })
-      //   if (!user) {
-      //     console.log('user not found, creating new one')
-      //     const friendList = new Friends({
-      //       list: [],
-      //       pending: [],
-      //       request: [],
-      //     })
-      //     const newUser = new User({
-      //       first_name: profile.given_name,
-      //       family_name: profile.family_name,
-      //       email: profile.email,
-      //       hash: `need to update model so hash isn't required`,
-      //       friend_list: friendList,
-      //     })
-      //     await friendList.save()
-      //     await newUser.save()
-      //     return done(null, newUser, { message: "Welcome! User profile created" })
-      //   }
-      //   return done(null, user, { message: "Welcome back!" })
-      // } catch (err) {
-      //   console.log(err)
-      //   return done(err)
-      // }
+      const googleUser = formatG(profile._json)
+      try {
+        const user = await User.findOne({ email: googleUser.email })
+        if (!user) {
+          console.log('user not found, creating new one')
+          const friendList = new Friends({
+            list: [],
+            pending: [],
+            request: [],
+          })
+          const newUser = new User({
+            first_name: googleUser.first_name,
+            family_name: googleUser.family_name,
+            email: googleUser.email,
+            hash: `need to update model so hash isn't required`,
+            friend_list: friendList,
+          })
+          await friendList.save()
+          await newUser.save()
+          return done(null, newUser, { message: "Welcome! User profile created" })
+        }
+        return done(null, user, { message: "Welcome back!" })
+      } catch (err) {
+        console.log(err)
+        return done(err)
+      }
     }
   )
 )
