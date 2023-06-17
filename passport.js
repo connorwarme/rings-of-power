@@ -22,7 +22,7 @@ const facebook = {
   // state: true,
   //todo: don't know if I need proof - what is it? what does it do?
   // enableProof: true, //to enable secret proof
-  // profileFields: ['id', 'emails', 'name'] //scope of fields
+  profileFields: ['id', 'emails', 'name'] //scope of fields
 }
 // might be able to build this into facebook strategy fn
 const formatFB = (profile) => {
@@ -80,12 +80,10 @@ passport.use(
     facebook,
     // need to set session to false? 
     async (accessToken, refreshToken, profile, done) => {
-      console.log(profile)
        const fbUser = formatFB(profile._json)
        try {
         const user = await User.findOne({ email: fbUser.email })
         if (!user) {
-          console.log('user not found, creating new one')
           const friendList = new Friends({
             list: [],
             pending: [],

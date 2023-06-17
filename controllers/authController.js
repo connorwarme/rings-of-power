@@ -18,14 +18,13 @@ exports.login_facebook_redirect = (req, res, next) => {
   passport.authenticate('facebook', (err, user, info) => {
     // hanging before getting to this... need to double check settings on fb dev site
     // todo: figure out fb login
-    console.log('fb redirect working!')
     if (err) {
       return res.json({ errors: err })
     } else {
       const token = jwt.sign({ user }, process.env.JWT_KEY)
       return res.json({ user, token, info })
     }
-  })
+  })(req, res, next);
 }
 
 exports.login_google = (req, res, next) => {
