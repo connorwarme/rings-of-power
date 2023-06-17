@@ -11,11 +11,11 @@ exports.login = asyncHandler(async (req, res, next) => {
 })
 
 exports.login_facebook = (req, res, next) => {
-  passport.authenticate('facebook')(req, res, next)
+  passport.authenticate('facebook', { scope: [ 'email' ] })(req, res, next)
 }
 
 exports.login_facebook_redirect = (req, res, next) => {
-  passport.authenticate('facebook', { scope: [ 'email' ] }, (err, user, info) => {
+  passport.authenticate('facebook', (err, user, info) => {
     // hanging before getting to this... need to double check settings on fb dev site
     // todo: figure out fb login
     console.log('fb redirect working!')
