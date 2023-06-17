@@ -17,17 +17,33 @@ const UserSchema = new Schema({
   },
   hash: {
     type: String,
-    required: true,
+    required: false,
   },
   bio: {
     type: String,
     required: false,
   },
-  // not sure what type to put for image...
-  // image: {
-  //   type: Image,
-  //   required: false,
-  // },
+  loginid: {
+    type: Object,
+    default: {
+      hash: {
+        type: String,
+        default: null,
+      },
+      googleid: {
+        type: String,
+        default: null,
+      },
+      fbid: {
+        type: String,
+        default: null,
+      },
+    }
+  },
+  picture: {
+    type: String,
+    required: false,
+  },
   friend_list: {
     type: Schema.Types.ObjectId,
     ref: "Friends",

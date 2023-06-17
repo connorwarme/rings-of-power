@@ -79,7 +79,11 @@ exports.signup_post = [
         first_name: req.body.first_name,
         family_name: req.body.family_name,
         email: req.body.email,
-        hash: hashedPassword,
+        loginid: {
+          hash: hashedPassword,
+          googleid: null,
+          fbid: null,
+        },
         friend_list: friendlist._id,
       })
       if (!errors.isEmpty()) {

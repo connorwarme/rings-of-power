@@ -62,7 +62,7 @@ passport.use(
       if (!user) {
         return done(null, false, { message: "Incorrect email!" })
       }
-      bcrypt.compare(password, user.hash, (err, res) => {
+      bcrypt.compare(password, user.loginid.hash, (err, res) => {
         if (res) {
           return done(null, user, { message: 'Login successful!' })
         } else { 
@@ -114,6 +114,7 @@ passport.use(
     // options for google oauth
     google, 
     async(accessToken, refreshToken, profile, done) => {
+      console.log(profile)
       const googleUser = formatG(profile._json)
       try {
         const user = await User.findOne({ email: googleUser.email })
