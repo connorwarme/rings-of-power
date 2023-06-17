@@ -30,6 +30,8 @@ const formatFB = (profile) => {
     first_name: profile.first_name,
     family_name: profile.last_name,
     email: profile.email,
+    picture: profile.picture,
+    fbid: profile.id,
   }
 }
 
@@ -80,6 +82,7 @@ passport.use(
     facebook,
     // need to set session to false? 
     async (accessToken, refreshToken, profile, done) => {
+      console.log(profile)
        const fbUser = formatFB(profile._json)
        try {
         const user = await User.findOne({ email: fbUser.email })
@@ -93,7 +96,11 @@ passport.use(
             first_name: fbUser.first_name,
             family_name: fbUser.family_name,
             email: fbUser.email,
-            hash: `need to update model so hash isn't required`,
+            loginid: {
+              hash: null,
+              googleid: null,
+              fbid: fbUser.fbid,
+            },
             friend_list: friendList,
           })
           await friendList.save()
@@ -129,7 +136,11 @@ passport.use(
             first_name: googleUser.first_name,
             family_name: googleUser.family_name,
             email: googleUser.email,
-            hash: `need to update model so hash isn't required`,
+            loginid: {
+              hash: null,
+              googleid: googleUser.googleid,
+              fbid: null,
+            },
             friend_list: friendList,
           })
           await friendList.save()

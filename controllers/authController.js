@@ -11,7 +11,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 })
 
 exports.login_facebook = (req, res, next) => {
-  passport.authenticate('facebook', { scope: [ 'email' ] })(req, res, next)
+  passport.authenticate('facebook', { scope: [ 'public_profile', 'email' ] })(req, res, next)
 }
 
 exports.login_facebook_redirect = (req, res, next) => {
