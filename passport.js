@@ -22,7 +22,7 @@ const facebook = {
   // state: true,
   //todo: don't know if I need proof - what is it? what does it do?
   // enableProof: true, //to enable secret proof
-  profileFields: ['id', 'emails', 'name'] //scope of fields
+  profileFields: ['id', 'emails', 'name', 'picture.type(large)'] //scope of fields
 }
 // might be able to build this into facebook strategy fn
 const formatFB = (profile) => {
@@ -30,7 +30,7 @@ const formatFB = (profile) => {
     first_name: profile.first_name,
     family_name: profile.last_name,
     email: profile.email,
-    picture: profile.picture,
+    picture: profile.picture.data.url,
     fbid: profile.id,
   }
 }
@@ -101,6 +101,7 @@ passport.use(
               googleid: null,
               fbid: fbUser.fbid,
             },
+            picture: fbUser.picture,
             friend_list: friendList,
           })
           await friendList.save()
