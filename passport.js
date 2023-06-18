@@ -142,6 +142,7 @@ passport.use(
               googleid: googleUser.googleid,
               fbid: null,
             },
+            picture: googleUser.picture,
             friend_list: friendList,
           })
           await friendList.save()
