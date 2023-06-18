@@ -46,7 +46,7 @@ const formatG = (profile) => {
     first_name: profile.given_name,
     family_name: profile.family_name,
     email: profile.email,
-    picture: profile.picture,
+    picture: profile.picture.replace("=s96-c", "") || null,
     googleid: profile.sub
   }
 }
