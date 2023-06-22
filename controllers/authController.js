@@ -16,6 +16,8 @@ exports.login = asyncHandler(async (req, res, next) => {
 // })
 
 exports.login_local = (req, res, next) => {
+  // error is that old users don't have the loginid object - so can't check their password
+  // need to recreate old user and then check local strategy
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err) {
       console.log(err)
