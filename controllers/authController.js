@@ -10,6 +10,29 @@ exports.login = asyncHandler(async (req, res, next) => {
   res.status(200).json({ title: "Login on auth!" })
 })
 
+// todo: don't think I need this route. local login will be on initial login route, along w/ btn for google and fb login
+// exports.login_local = asyncHandler(async (req, res, next) => {
+//   res.render("login", { title: "Login" })
+// })
+
+exports.login_local = (req, res, next) => {
+  passport.authenticate("local", { session: false }, (err, user, info) => {
+    if (err) {
+      console.log(err)
+      return res.json({ errors: err })
+    }
+    if (user === false) {
+      const error = new Error("User not found!")
+      error.status = 404
+      console.log(error)
+      return res.json({ errors: error })
+    } else {
+      const token = jwt.sign({ user }, process.env.JWT_KEY)
+      return res.json({ user, token })
+    }
+  })(req, res, next)
+}
+
 exports.login_facebook = (req, res, next) => {
   passport.authenticate('facebook', { scope: [ 'public_profile', 'email' ] })(req, res, next)
 }

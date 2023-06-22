@@ -12,7 +12,7 @@ exports.login_get = asyncHandler(async (req, res, next) => {
   res.render("login", { title: "Login" })
 })
 exports.login_post = (req, res, next) => {
-  passport.authenticate("local", { session: false}, (err, user, info) => {
+  passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err) {
       return res.json({ errors: err })
     }
