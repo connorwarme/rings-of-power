@@ -9,7 +9,9 @@ const Friends = require("../models/friends")
 const Post = require("../models/post")
 
 exports.login_get = asyncHandler(async (req, res, next) => {
-  res.render("login", { title: "Login" })
+  if (!req.token) {
+    res.render("login", { title: "Login" })
+  }
 })
 exports.login_post = (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
@@ -404,9 +406,10 @@ exports.verifyNoToken = (req, res, next) => {
   const authHeader = req.headers['authorization']
   const token = authHeader && authHeader.split(' ')[1]
   if (token != null) {
+    req.token = token
     const error = new Error("You are already a user!")
     error.status = 403
-    res.json({ errors: error })
+    res.json({ errors: error, token })
   }
   next()
 }
