@@ -3,9 +3,14 @@ const router = express.Router()
 
 const auth_controller = require("../controllers/authController")
 
+// todo: do these routes need a verifyNoToken? 
+
 router.get("/login", auth_controller.login)
 
 router.get("/logout", (req, res) => {
+  // what does logout require? 
+  // delete token from local storage
+  // what else?
   res.json({
     message: "logging out",
   })
