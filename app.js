@@ -7,6 +7,7 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require("express-session")
 const passport = require("passport")
+const cors = require("cors")
 
 require("./mongoConfig") 
 require("./passport")
@@ -20,6 +21,9 @@ const app = express();
 // set up view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+
+// cors pre-flight
+app.options('*', cors())
 
 app.use(logger('dev'));
 app.use(express.json());
