@@ -19,6 +19,12 @@ router.get('/', index_controller.verifyToken, function(req, res, next) {
   // })
 });
 
+router.get('/get', function(req, res, next) {
+  res.json({
+    message: "It worked!"
+  })
+})
+
 router.get('/login', index_controller.verifyNoToken, index_controller.login_get)
 router.post('/login', index_controller.login_post)
 

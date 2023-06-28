@@ -12,18 +12,15 @@ const cors = require("cors")
 require("./mongoConfig") 
 require("./passport")
 
+const app = express();
+
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth')
 const userRouter = require('./routes/user');
 
-const app = express();
-
 // set up view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
-
-// cors pre-flight
-app.options('*', cors())
 
 app.use(logger('dev'));
 app.use(express.json());
@@ -39,6 +36,10 @@ app.use(passport.session())
 //   res.locals.currentUser = req.user 
 //   next()
 // })
+
+app.use(cors({
+  origin: 'http://localhost:5173'
+}))
 
 // set up routes
 app.use('/', indexRouter);

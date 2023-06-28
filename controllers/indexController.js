@@ -114,7 +114,6 @@ exports.signup_post = [
 exports.profile_get = asyncHandler(async(req, res, next) => {
   const posts = await Post.find({ author: req.user.user._id }).exec()
   // trying to debug connecting w/ frontend
-  res.setHeader('Content-Type', 'application/json');
   return res.send(JSON.stringify({user:req.user.user, postArray: posts}));
   // return res.json({ user: req.user.user, posts })
 })
