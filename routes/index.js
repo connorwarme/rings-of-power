@@ -32,6 +32,7 @@ router.get('/signup', index_controller.verifyNoToken, index_controller.signup_ge
 router.post('/signup', index_controller.signup_post)
 
 router.get('/profile', index_controller.verifyToken, index_controller.profile_get)
+router.get('/profile/:id', index_controller.verifyToken, index_controller.profile_detail_get)
 router.get('/posts', index_controller.verifyToken, index_controller.posts_all_get)
 router.get('/other-posts', index_controller.verifyToken, index_controller.posts_other_get)
 

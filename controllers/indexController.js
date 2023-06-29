@@ -113,9 +113,12 @@ exports.signup_post = [
 
 exports.profile_get = asyncHandler(async(req, res, next) => {
   const posts = await Post.find({ author: req.user.user._id }).exec()
-  // trying to debug connecting w/ frontend
-  return res.send(JSON.stringify({user:req.user.user, postArray: posts}));
-  // return res.json({ user: req.user.user, posts })
+  return res.json({ user: req.user.user, profile: req.user.user, posts })
+})
+exports.profile_detail_get = asyncHandler(async(req, res, next) => {
+  const user = await User.findById(req.params.id).exec()
+  const posts = await Post.find({ author: req.params.id }).exec()
+  return res.json({ user: req.user.user, profile: user, posts })
 })
 // should these two be bunched together? 
 // would make for only one db query, and just return an allposts and a someposts...
