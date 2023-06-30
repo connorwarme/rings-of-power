@@ -19,6 +19,11 @@ exports.login_post = (req, res, next) => {
       return res.json({ errors: err })
     }
     if (user === false) {
+      console.log(req.headers)
+      console.log(req.body)
+      // look up how to connect front end form items with backend (passport)
+      // ie how to send the form data to the backend
+      // right now my fetch provides "body: {email, password}" but I don't think the backend is parsing the body object...
       const error = new Error("User not found!")
       error.status = 404
       return res.json({ errors: error })
