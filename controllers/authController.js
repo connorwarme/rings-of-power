@@ -17,6 +17,8 @@ exports.login = asyncHandler(async (req, res, next) => {
 
 exports.login_local = (req, res, next) => {
   console.log('firing local passport fn')
+  console.log(req.body)
+  console.log(req.body.username)
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err) {
       console.log(err)
