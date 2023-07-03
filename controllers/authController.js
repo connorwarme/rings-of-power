@@ -16,9 +16,6 @@ exports.login = asyncHandler(async (req, res, next) => {
 // })
 
 exports.login_local = (req, res, next) => {
-  console.log('firing local passport fn')
-  console.log(req.body)
-  console.log(req.body.username)
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err) {
       console.log(err)
@@ -30,7 +27,6 @@ exports.login_local = (req, res, next) => {
       console.log(error)
       return res.json({ errors: error })
     } else {
-      console.log('yo, it worked!')
       const token = jwt.sign({ user }, process.env.JWT_KEY)
       return res.json({ user, token })
     }
