@@ -19,11 +19,6 @@ exports.login_post = (req, res, next) => {
       return res.json({ errors: err })
     }
     if (user === false) {
-      console.log(req.headers)
-      console.log(req.body)
-      // look up how to connect front end form items with backend (passport)
-      // ie how to send the form data to the backend
-      // right now my fetch provides "body: {email, password}" but I don't think the backend is parsing the body object...
       const error = new Error("User not found!")
       error.status = 404
       return res.json({ errors: error })
@@ -36,7 +31,7 @@ exports.login_post = (req, res, next) => {
 
 // learn how to incorporate oauth w/ facebook and google
 // do i need to change my user schema?
-//      do i need to do a verify email?
+// do i need to do a verify email?
 // how do I add the options to the passport.authenticate fn? aka differentiate between
 // how to organize/structure this new code (separate folders for local, fb, google?)
 
