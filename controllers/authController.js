@@ -15,6 +15,49 @@ exports.login = asyncHandler(async (req, res, next) => {
 //   res.render("login", { title: "Login" })
 // })
 
+exports.login_localvs = [
+  body("email", "Please enter your email address.")
+  .trim()
+  .isLength({ min: 1 })
+  .isEmail()
+  .escape(),
+  body("password", "Please enter your password.")
+  .trim()
+  .isLength({ min: 6 })
+  .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req)
+    console.log(errors.array())
+    const login = {
+      email: req.body.email,
+      password: '',
+    }
+      if (!errors.isEmpty()) {
+        res.json({ errors: errors.array(), login })
+        return
+      } else {
+        passport.authenticate("local", { session: false }, (err, user, info) => {
+          if (err) {
+            console.log(err)
+            return res.json({ errors: err, login })
+          }
+          // this can actually happen for incorrect email or for incorrect password
+          // todo: handle this error properly
+          if (user === false) {
+            const error = new Error(info.message)
+            error.status = 404
+            console.log(error)
+            return res.json({ errors: error, login })
+          } else {
+            const token = jwt.sign({ user }, process.env.JWT_KEY)
+            return res.json({ user, token })
+          }
+        })(req, res, next)
+      }
+    })
+]
+// this one works, doesn't validate and sanitize data...
 exports.login_local = (req, res, next) => {
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err) {

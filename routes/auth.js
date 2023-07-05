@@ -16,7 +16,7 @@ router.get("/logout", (req, res) => {
   })
 })
 
-router.post("/local", auth_controller.login_local)
+router.post("/local", auth_controller.login_localvs)
 
 router.get("/facebook", auth_controller.login_facebook)
 
