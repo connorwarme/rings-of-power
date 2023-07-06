@@ -62,13 +62,13 @@ passport.use(
     try {
       const user = await User.findOne({ email: username })
       if (!user) {
-        return done(null, false, { message: "Incorrect email!" })
+        return done(null, false, { message: "Incorrect email!", email: true })
       }
       bcrypt.compare(password, user.loginid.hash, (err, res) => {
         if (res) {
           return done(null, user, { message: 'Login successful!' })
         } else { 
-          return done(null, false, { message: "Incorrect password!" })
+          return done(null, false, { message: "Incorrect password!", password: true })
         }
       })
     } catch (err) {

@@ -39,16 +39,15 @@ exports.login_localvs = [
       } else {
         passport.authenticate("local", { session: false }, (err, user, info) => {
           if (err) {
-            console.log(err)
             return res.json({ errors: err, login })
           }
           // this can actually happen for incorrect email or for incorrect password
           // todo: handle this error properly
           if (user === false) {
-            const error = new Error(info.message)
+            const error = new Error()
+            error.msg = info.message
             error.status = 404
-            console.log(error)
-            return res.json({ errors: error, login })
+            return res.json({ errors: [error], login })
           } else {
             const token = jwt.sign({ user }, process.env.JWT_KEY)
             return res.json({ user, token })
