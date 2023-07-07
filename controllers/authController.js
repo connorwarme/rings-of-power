@@ -96,7 +96,11 @@ exports.login_google = (req, res, next) => {
 
 exports.login_google_redirect = (req, res, next) => {
   passport.authenticate('google', (err, user, info) => {
+    // not getting to this part of the authentication..?? not sure why. 
+    // problem is that prior function is not returning any data... not sure why?
     console.log('working, i think?')
+    console.log(err)
+    console.log(user)
     if (err) {
       return res.json({ errors: err })
     } else {
