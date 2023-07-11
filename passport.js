@@ -17,7 +17,7 @@ const facebook = {
   clientID: process.env.FB_APP_ID,
   clientSecret: process.env.FB_APP_KEY,
   //todo: based on env, change url to localhost, dev or prod
-  callbackURL: "/auth/facebook/redirect",
+  callbackURL: "http://localhost:3000/auth/facebook/redirect",
   //todo: do I need state?
   // state: true,
   //todo: don't know if I need proof - what is it? what does it do?
@@ -37,7 +37,7 @@ const formatFB = (profile) => {
 
 const google = {
   //todo: based on env, change url to localhost, dev or prod
-  callbackURL: "/auth/google/redirect",
+  callbackURL: "http://localhost:3000/auth/google/redirect",
   clientID: process.env.G_APP_ID,
   clientSecret: process.env.G_APP_KEY,
 }
