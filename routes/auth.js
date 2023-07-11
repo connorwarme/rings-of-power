@@ -12,7 +12,7 @@ router.get("/logout", (req, res) => {
   // delete token from local storage
   // what else?
   req.logout()
-  res.redirect('http://localhost:5371/login')
+  res.redirect('http://localhost:5173/login')
 })
 
 router.post("/local", auth_controller.login_localvs)

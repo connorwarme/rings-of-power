@@ -37,8 +37,15 @@ app.use(passport.session())
 //   next()
 // })
 
+// trying to debug on 7/10, not sure how it'll work out
+// app.use(cors({
+//   origin: ['http://localhost:5173', 'https://accounts.google.com']
+// }))
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'https://accounts.google.com']
+  origin: 'http://localhost:5173',
+  methods: "GET,POST,PUT,DELETE",
+  credentials: true,
 }))
 
 // set up routes
