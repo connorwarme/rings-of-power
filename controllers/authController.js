@@ -94,8 +94,13 @@ exports.login_google = (req, res, next) => {
   passport.authenticate('google', { scope: [ 'profile', 'email' ] })(req, res, next)
 }
 
+// not sure if this is how i want to handle failure, but will follow up. going to make a simple route/fn in routes page
 exports.login_google_redirect = (req, res, next) => {
-  passport.authenticate('google', (err, user, info) => {
+  passport.authenticate('google', {
+    successRedirect: 'http://localhost:5371',
+    failureRedirect: '/auth/login/failed',
+  },
+  (err, user, info) => {
     // not getting to this part of the authentication..?? not sure why. 
     // problem is that prior function is not returning any data... not sure why?
     console.log('working, i think?')

@@ -11,9 +11,8 @@ router.get("/logout", (req, res) => {
   // what does logout require? 
   // delete token from local storage
   // what else?
-  res.json({
-    message: "logging out",
-  })
+  req.logout()
+  res.redirect('http://localhost:5371/login')
 })
 
 router.post("/local", auth_controller.login_localvs)
@@ -25,5 +24,21 @@ router.get("/facebook/redirect", auth_controller.login_facebook_redirect)
 router.get("/google", auth_controller.login_google)
 
 router.get("/google/redirect", auth_controller.login_google_redirect)
+
+router.get("/login/success", (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "login successful :D",
+    user: req.user,
+    // jwt could be here...
+  })
+})
+
+router.get("/login/failed", (req, res) => {
+  res.status(401).json({
+    success: false,
+    message: "login failed :/"
+  })
+})
 
 module.exports = router
