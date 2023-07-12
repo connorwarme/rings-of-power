@@ -42,11 +42,12 @@ app.use(passport.session())
 //   origin: ['http://localhost:5173', 'https://accounts.google.com']
 // }))
 
-app.use(cors({
-  origin: 'http://localhost:5173',
-  methods: "GET,POST,PUT,DELETE",
-  credentials: true,
-}))
+app.use(cors(
+  {
+    origin: [ 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth' ],
+    methods: [ "GET", "POST", "PUT", "DELETE" ],
+  }
+))
 
 // set up routes
 app.use('/', indexRouter);
