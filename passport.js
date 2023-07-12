@@ -40,8 +40,6 @@ const google = {
   callbackURL: "http://localhost:3000/auth/google/redirect",
   clientID: process.env.G_APP_ID,
   clientSecret: process.env.G_APP_KEY,
-  // adding this line in debugging 7/10
-  passReqToCallback: true,
 }
 const formatG = (profile) => {
   return {
