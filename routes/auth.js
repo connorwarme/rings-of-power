@@ -2,6 +2,7 @@ const express = require("express")
 const router = express.Router()
 
 const auth_controller = require("../controllers/authController")
+const jwt = require("../jwt")
 
 // todo: do these routes need a verifyNoToken? 
 
@@ -25,7 +26,7 @@ router.get("/google", auth_controller.login_google)
 
 router.get("/google/redirect", auth_controller.login_google_redirect)
 
-router.get("/login/success", (req, res) => {
+router.get("/login/success", jwt.verifyToken, (req, res) => {
   res.status(200).json({
     success: true,
     message: "login successful :D",
@@ -40,5 +41,7 @@ router.get("/login/failed", (req, res) => {
     message: "login failed :/"
   })
 })
+
+router.post("/logout", jwt.verifyToken, auth_controller.logout_post)
 
 module.exports = router

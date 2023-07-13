@@ -66,7 +66,7 @@ exports.login_localvs = [
             // add to array
             refreshTokens.push(refreshToken)
 
-            return res.json({ user, accessToken })
+            return res.json({ user, accessToken, refreshToken })
           }
         })(req, res, next)
       }
@@ -140,10 +140,11 @@ exports.refresh_token_post = (req, res, next) => {
   if (!refreshTokens.includes(refreshToken)) {
     return res.status(403).json("Refresh token is not valid!")
   }
+  // create new access and refresh tokens and send to user
   jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
     if (err) return res.json({ errors: err })
     // invalidate old refresh token (by removing it from array)
-    refreshTokens = refreshTokens.filter((token) => token !== refreshToken)
+    refreshTokens = refreshTokens.filter(token => token !== refreshToken)
     // generate new access and refresh tokens
     const newAccessToken = generateAccessToken(user)
     const newRefreshToken = generateRefreshToken(user)
@@ -153,4 +154,11 @@ exports.refresh_token_post = (req, res, next) => {
     return res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken })
 
   })
+}
+
+// have to provide accessToken as authorization header && refreshToken in body as "token"
+exports.logout_post = (req, res, next) => {
+  const refreshToken = req.body.token
+  refreshTokens = refreshTokens.filter(token => token !== refreshToken)
+  return res.status(200).json("Logged out successfully!")
 }
