@@ -31,6 +31,14 @@ router.post('/login', index_controller.login_post)
 router.get('/signup', index_controller.verifyNoToken, index_controller.signup_get)
 router.post('/signup', index_controller.signup_post)
 
+router.post('/refresh', (req, res, next) => {
+  // take the refresh token from user
+  const refreshToken = req.body.token
+  // send user is no token of if invalid
+  if (!refreshToken) return res.status(401).json("You are not authenticated!")
+  // if everything is okay, create new access token and refresh token and send to user.
+})
+
 router.get('/profile', index_controller.verifyToken, index_controller.profile_get)
 router.get('/profile/:id', index_controller.verifyToken, index_controller.profile_detail_get)
 router.get('/posts', index_controller.verifyToken, index_controller.posts_all_get)

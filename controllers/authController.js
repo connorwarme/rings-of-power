@@ -6,6 +6,15 @@ const passport = require("passport")
 const jwt = require("jsonwebtoken")
 const User = require("../models/user")
 
+// jwt 
+const generateAccessToken = (user) => {
+  return jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "15m" })
+}
+const generateRefreshToken = (user) => {
+  return jwt.sign({ user }, process.env.JWT_REFRESH_KEY)
+}
+
+
 exports.login = asyncHandler(async (req, res, next) => {
   res.status(200).json({ title: "Login on auth!" })
 })
@@ -69,7 +78,7 @@ exports.login_local = (req, res, next) => {
       console.log(error)
       return res.json({ errors: error })
     } else {
-      const token = jwt.sign({ user }, process.env.JWT_KEY)
+      const token = jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "15m" })
       return res.json({ user, token })
     }
   })(req, res, next)
