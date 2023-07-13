@@ -13,6 +13,8 @@ const generateAccessToken = (user) => {
 const generateRefreshToken = (user) => {
   return jwt.sign({ user }, process.env.JWT_REFRESH_KEY)
 }
+// how to properly handle this (storage of refresh tokens)..?
+let refreshTokens = []
 
 
 exports.login = asyncHandler(async (req, res, next) => {
@@ -58,8 +60,13 @@ exports.login_localvs = [
             error.status = 404
             return res.json({ errors: [error], login })
           } else {
-            const token = jwt.sign({ user }, process.env.JWT_KEY)
-            return res.json({ user, token })
+            // generate tokens
+            const accessToken = generateAccessToken(user)
+            const refreshToken = generateRefreshToken(user)
+            // add to array
+            refreshTokens.push(refreshToken)
+
+            return res.json({ user, accessToken })
           }
         })(req, res, next)
       }
@@ -125,3 +132,25 @@ exports.login_google_redirect = (req, res, next) => {
   })(req, res, next);
 }
 
+exports.refresh_token_post = (req, res, next) => {
+  // take the fresh token from the user
+  const refreshToken = req.body.token
+  // send error if no token or if invalid
+  if (!refreshToken) return res.status(401).json("You are not authenticated!")
+  if (!refreshTokens.includes(refreshToken)) {
+    return res.status(403).json("Refresh token is not valid!")
+  }
+  jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
+    if (err) return res.json({ errors: err })
+    // invalidate old refresh token (by removing it from array)
+    refreshTokens = refreshTokens.filter((token) => token !== refreshToken)
+    // generate new access and refresh tokens
+    const newAccessToken = generateAccessToken(user)
+    const newRefreshToken = generateRefreshToken(user)
+    // add newRefreshToken to array
+    refreshTokens.push(newRefreshToken)
+
+    return res.status(200).json({ accessToken: newAccessToken, refreshToken: newRefreshToken })
+
+  })
+}
