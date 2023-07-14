@@ -109,25 +109,25 @@ exports.login_facebook_redirect = (req, res, next) => {
 exports.login_google = (req, res, next) => {
   passport.authenticate('google', { scope: [ 'profile', 'email' ] })(req, res, next)
 }
-// things aren't working. my client sends the request to /auth/google, gets a response back. empty but has redirect value in headers but I can't read the header...
-// learning objectives:
-// go through google's oauth docs to see if there's any little clues
-// does CORS matter? how is it impacting this?
-// maybe try to go through the entire tutorial (that I cherry-picked from) to see if that approach would work
-// my browser is showing the headers...why can't I see them in logs? 
 
 // not sure if this is how i want to handle failure, but will follow up. going to make a simple route/fn in routes page
 exports.login_google_redirect = (req, res, next) => {
   passport.authenticate('google',
   (err, user, info) => {
-    // not getting to this part of the authentication..?? not sure why. 
-    // problem is that prior function is not returning any data... not sure why?
+
     console.log('working, i think?')
     if (err) {
-      return res.json({ errors: err })
+      return res.redirect("http://localhost:5173/login", { errors: err })
     } else {
-      const token = jwt.sign({ user }, process.env.JWT_KEY)
-      return res.json({ user, token, info })
+      // generate tokens
+      const accessToken = generateAccessToken(user)
+      const refreshToken = generateRefreshToken(user)
+      // add to array
+      refreshTokens.push(refreshToken)
+      // how to get the user and tokens to the client app?
+      // going to come back to this, but I think the solution is to pass it thru as url parameters (7/13)
+      // not sure if this is best practice...
+      return res.redirect('http://localhost:5173', { user, token, info })
     }
   })(req, res, next);
 }
