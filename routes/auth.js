@@ -27,12 +27,14 @@ router.get("/google", auth_controller.login_google)
 router.get("/google/redirect", auth_controller.login_google_redirect)
 
 router.get("/login/success", jwt.verifyToken, (req, res) => {
-  res.status(200).json({
-    success: true,
-    message: "login successful :D",
-    user: req.user,
-    // jwt could be here...
-  })
+  if (req.user) {
+    res.status(200).json({
+      success: true,
+      message: "login successful :D",
+      user: req.user,
+      // jwt could be here...
+    })
+  }
 })
 
 router.get("/login/failed", (req, res) => {

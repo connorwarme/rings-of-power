@@ -127,7 +127,7 @@ exports.login_google_redirect = (req, res, next) => {
       // how to get the user and tokens to the client app?
       // going to come back to this, but I think the solution is to pass it thru as url parameters (7/13)
       // not sure if this is best practice...
-      const url = 'http://localhost:5173/' + accessToken
+      const url = 'http://localhost:5173'
       console.log(url)
       return res.redirect(url)
     }
