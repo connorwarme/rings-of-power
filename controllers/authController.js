@@ -21,6 +21,19 @@ exports.login = asyncHandler(async (req, res, next) => {
   res.status(200).json({ title: "Login on auth!" })
 })
 
+exports.user_get = (req, res) => {
+  // generate tokens
+  const accessToken = generateAccessToken(req.user)
+  const refreshToken = generateRefreshToken(req.user)
+  // add to array
+  refreshTokens.push(refreshToken)
+  return res.send({
+    user: req.user,
+    access: accessToken,
+    refresh: refreshToken,
+  })
+}
+
 // todo: don't think I need this route. local login will be on initial login route, along w/ btn for google and fb login
 // exports.login_local = asyncHandler(async (req, res, next) => {
 //   res.render("login", { title: "Login" })
@@ -128,6 +141,7 @@ exports.login_google_redirect = (req, res, next) => {
   //   if (err) {
   //     return res.redirect("http://localhost:5173/login")
   //   } else {
+
   //     // generate tokens
   //     const accessToken = generateAccessToken(user)
   //     const refreshToken = generateRefreshToken(user)
