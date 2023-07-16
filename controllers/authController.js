@@ -112,26 +112,35 @@ exports.login_google = (req, res, next) => {
 
 // not sure if this is how i want to handle failure, but will follow up. going to make a simple route/fn in routes page
 exports.login_google_redirect = (req, res, next) => {
-  passport.authenticate('google',
-  (err, user, info) => {
+  passport.authenticate('google', { 
+    successRedirect: 'http://localhost:5173/',
+    failureRedirect: 'http://localhost:5173/login', 
+    session: true 
+  })(req, res, next)
 
-    console.log('working, i think?')
-    if (err) {
-      return res.redirect("http://localhost:5173/login")
-    } else {
-      // generate tokens
-      const accessToken = generateAccessToken(user)
-      const refreshToken = generateRefreshToken(user)
-      // add to array
-      refreshTokens.push(refreshToken)
-      // how to get the user and tokens to the client app?
-      // going to come back to this, but I think the solution is to pass it thru as url parameters (7/13)
-      // not sure if this is best practice...
-      const url = 'http://localhost:5173'
-      console.log(url)
-      return res.redirect(url)
-    }
-  })(req, res, next);
+
+
+  // trying some debugging 7/15
+  // passport.authenticate('google', { session: true },
+  // (err, user, info) => {
+
+  //   console.log('working, i think?')
+  //   if (err) {
+  //     return res.redirect("http://localhost:5173/login")
+  //   } else {
+  //     // generate tokens
+  //     const accessToken = generateAccessToken(user)
+  //     const refreshToken = generateRefreshToken(user)
+  //     // add to array
+  //     refreshTokens.push(refreshToken)
+  //     // how to get the user and tokens to the client app?
+  //     // going to come back to this, but I think the solution is to pass it thru as url parameters (7/13)
+  //     // not sure if this is best practice...
+  //     const url = 'http://localhost:5173'
+  //     console.log(url)
+  //     return res.redirect(url)
+  //   }
+  // })(req, res, next);
 }
 
 exports.refresh_token_post = (req, res, next) => {

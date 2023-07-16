@@ -8,6 +8,7 @@ exports.verifyToken = (req, res, next) => {
     // need user to sign in to access page content
     const error = new Error("No token found.")
     error.status = 401
+    console.log('no token found')
     return res.json({ errors: error })
   }
   jwt.verify(token, process.env.JWT_KEY, (err, user) => {
