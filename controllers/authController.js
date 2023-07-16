@@ -109,14 +109,21 @@ exports.login_facebook = (req, res, next) => {
 }
 
 exports.login_facebook_redirect = (req, res, next) => {
-  passport.authenticate('facebook', (err, user, info) => {
-    if (err) {
-      return res.json({ errors: err })
-    } else {
-      const token = jwt.sign({ user }, process.env.JWT_KEY)
-      return res.json({ user, token, info })
-    }
-  })(req, res, next);
+  passport.authenticate('facebook', {
+    successRedirect: 'http://localhost:5173/',
+    failureRedirect: 'http://localhost:5173/login', 
+    session: true, 
+  })(req, res, next)
+
+  // old methodology...commented out on 7/15
+  // passport.authenticate('facebook', (err, user, info) => {
+  //   if (err) {
+  //     return res.json({ errors: err })
+  //   } else {
+  //     const token = jwt.sign({ user }, process.env.JWT_KEY)
+  //     return res.json({ user, token, info })
+  //   }
+  // })(req, res, next);
 }
 
 exports.login_google = (req, res, next) => {
@@ -128,7 +135,7 @@ exports.login_google_redirect = (req, res, next) => {
   passport.authenticate('google', { 
     successRedirect: 'http://localhost:5173/',
     failureRedirect: 'http://localhost:5173/login', 
-    session: true 
+    session: true, 
   })(req, res, next)
 
 
