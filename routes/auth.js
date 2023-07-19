@@ -8,14 +8,6 @@ const jwt = require("../jwt")
 
 router.get("/login", auth_controller.login)
 
-router.get("/logout", (req, res) => {
-  // what does logout require? 
-  // delete token from local storage
-  // what else?
-  req.logout()
-  res.redirect('http://localhost:5173/login')
-})
-
 router.post("/local", auth_controller.login_localvs)
 
 router.get("/facebook", auth_controller.login_facebook)
@@ -36,7 +28,7 @@ router.get("/google/redirect", auth_controller.login_google_redirect)
 //     })
 //   }
 // })
-router.get("/user", auth_controller.user_get)
+router.get("/user", jwt.verifyToken, auth_controller.user_get)
 
 router.get("/login/failed", (req, res) => {
   res.status(401).json({
@@ -45,6 +37,7 @@ router.get("/login/failed", (req, res) => {
   })
 })
 
-router.post("/logout", jwt.verifyToken, auth_controller.logout_post)
+// remove jwt.verifyToken, as I rework building logout fn
+router.post("/logout", auth_controller.logout_post)
 
 module.exports = router
