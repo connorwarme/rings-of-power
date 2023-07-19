@@ -22,16 +22,20 @@ exports.login = asyncHandler(async (req, res, next) => {
 })
 
 exports.user_get = (req, res) => {
-  // generate tokens
-  const accessToken = generateAccessToken(req.user)
-  const refreshToken = generateRefreshToken(req.user)
-  // add to array
-  refreshTokens.push(refreshToken)
-  return res.send({
-    user: req.user,
-    access: accessToken,
-    refresh: refreshToken,
-  })
+  if (req.user) {
+    // generate tokens
+    // const accessToken = generateAccessToken(req.user)
+    // const refreshToken = generateRefreshToken(req.user)
+    // // add to array
+    // refreshTokens.push(refreshToken)
+    return res.send({
+      user: req.user,
+      // access: accessToken,
+      // refresh: refreshToken,
+    })
+  } else {
+    console.log('no user on request....keep debugging')
+  }
 }
 
 // todo: don't think I need this route. local login will be on initial login route, along w/ btn for google and fb login
@@ -78,7 +82,7 @@ exports.login_localvs = [
             const refreshToken = generateRefreshToken(user)
             // add to array
             refreshTokens.push(refreshToken)
-
+            console.log(accessToken)
             return res.json({ user, accessToken, refreshToken })
           }
         })(req, res, next)
@@ -189,8 +193,17 @@ exports.refresh_token_post = (req, res, next) => {
 }
 
 // have to provide accessToken as authorization header && refreshToken in body as "token"
+// 
 exports.logout_post = (req, res, next) => {
-  const refreshToken = req.body.token
-  refreshTokens = refreshTokens.filter(token => token !== refreshToken)
-  return res.status(200).json("Logged out successfully!")
+  console.log(req.headers)
+  console.log(req.user)
+  // req.logout doesn't work -> throws an internal server error (500)
+  // req.logout()
+  req.logout((err) => {
+    if (err) return next(err)
+    res.status(200).json("Logged out successfully!")
+  })
+  // const refreshToken = req.body.token
+  // refreshTokens = refreshTokens.filter(token => token !== refreshToken)
+  // return res.status(200).json("Logged out successfully!")
 }
