@@ -11,13 +11,13 @@ exports.verifyToken = (req, res, next) => {
     console.log('no token found')
     return res.json({ errors: error })
   }
-  jwt.verify(token, process.env.JWT_KEY, (err, user) => {
+  jwt.verify(token, process.env.JWT_KEY, (err, data) => {
     if (err) {
       const error = new Error("You don't have proper clearance :/")
       error.status = 403
       return res.json({ errors: error })
     }
-    req.user = user
+    req.user = data.user
     req.token = token
     next()
   })
