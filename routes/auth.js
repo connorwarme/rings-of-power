@@ -1,5 +1,6 @@
 const express = require("express")
 const router = express.Router()
+const passport = require("passport")
 
 const auth_controller = require("../controllers/authController")
 const jwt = require("../jwt")
@@ -30,6 +31,31 @@ router.get("/google/redirect", auth_controller.login_google_redirect)
 //   }
 // })
 router.get("/user", jwt.verifyToken, auth_controller.user_get)
+
+router.get("/oauth", (req, res, next) => {
+  passport.authenticate('session', (err, user, info) => {
+    if (err) {
+      console.log(err)
+      return res.json({ errors: err })
+    }
+    if (user === false) {
+      const error = new Error("User not found!")
+      error.status = 404
+      console.log(error)
+      return res.json({ errors: error })
+    } else {
+      const token = jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "15m" })
+      return res.json({ user, token })
+    }
+  })(req, res, next)
+})
+// notes for tommorow:
+// getting an error: 404 NotFound
+// it is not find the route to auth/oauth. wtf?? I don't understand, maybe my sleepy brain is missing something obvious
+// not certain that I have things set up properly for sending this axios request (withCredentials)
+// pretty sure that you don't explicitly attach the cookie, just use withCredentials
+// passport should authenticate, but need to confirm that is set up properly too.
+// idea is that they click to sign in w/ oauth, a success redirects to this page, which quickly sends the cookie back to the server, find/create the user, send back token and navigate to home page
 
 router.get("/login/failed", (req, res) => {
   res.status(401).json({
