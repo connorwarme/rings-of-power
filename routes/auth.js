@@ -15,7 +15,7 @@ router.get("/facebook", auth_controller.login_facebook)
 router.get("/facebook/redirect", auth_controller.login_facebook_redirect)
 
 // not sure if it will change anything...
-router.post("/google", auth_controller.login_google)
+router.get("/google", auth_controller.login_google)
 
 router.get("/google/redirect", auth_controller.login_google_redirect)
 

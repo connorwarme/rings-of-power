@@ -131,6 +131,7 @@ exports.login_facebook_redirect = (req, res, next) => {
 }
 
 exports.login_google = (req, res, next) => {
+  // not sure if this response type needs to be code. was trying to debug so I could use keep this authentication going on the backend
   passport.authenticate('google', { scope: [ 'profile', 'email' ] })(req, res, next)
 }
 
@@ -140,26 +141,33 @@ exports.login_google_redirect = (req, res, next) => {
   //   successRedirect: 'http://localhost:5173/',
   //   failureRedirect: 'http://localhost:5173/login', 
   //   session: true, 
-  passport.authenticate('google', (err, user, info) => {
-    if (err) {
-      res.redirect("http://localhost:5173/login")
-    } else {
-      if (user === false) {
-        const error = new Error()
-        error.msg = info.message
-        error.status = 404
-        return res.json({ errors: [error] })
-      } else {
-        // generate tokens
-        const accessToken = generateAccessToken(user)
-        const refreshToken = generateRefreshToken(user)
-        // add to array
-        refreshTokens.push(refreshToken)
-        console.log(accessToken)
-        return res.json({ user, accessToken, refreshToken })
-      }
-    }
+  passport.authenticate('google', {
+    successRedirect: 'http://localhost:5173/auth/success',
+    failureRedirect: 'http://localhost:5173/login',
+    session: true,
   })(req, res, next)
+  // (err, user, info) => {
+  //   console.log('firing passport authenticate google callback fn')
+  //   console.log({ err, user, info })
+  //   if (err) {
+  //     res.redirect("http://localhost:5173/login")
+  //   } else {
+  //     if (user === false) {
+  //       const error = new Error()
+  //       error.msg = info.message
+  //       error.status = 404
+  //       return res.json({ errors: [error] })
+  //     } else {
+  //       // generate tokens
+  //       const accessToken = generateAccessToken(user)
+  //       const refreshToken = generateRefreshToken(user)
+  //       // add to array
+  //       refreshTokens.push(refreshToken)
+  //       console.log(accessToken)
+  //       return res.json({ user, accessToken, refreshToken })
+  //     }
+  //   }
+
 
 
 

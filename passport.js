@@ -36,10 +36,10 @@ const formatFB = (profile) => {
 }
 
 const google = {
-  //todo: based on env, change url to localhost, dev or prod
-  callbackURL: "http://localhost:3000/auth/google/redirect",
   clientID: process.env.G_APP_ID,
   clientSecret: process.env.G_APP_KEY,
+  //todo: based on env, change url to localhost, dev or prod
+  callbackURL: "http://localhost:3000/auth/google/redirect",
 }
 const formatG = (profile) => {
   return {
