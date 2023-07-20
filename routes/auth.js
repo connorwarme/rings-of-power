@@ -37,7 +37,7 @@ router.get("/login/failed", (req, res) => {
   })
 })
 
-// remove jwt.verifyToken, as I rework building logout fn
+// do I need to jwt.verifyToken ??
 router.post("/logout", auth_controller.logout_post)
 
 module.exports = router

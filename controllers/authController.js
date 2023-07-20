@@ -197,13 +197,9 @@ exports.refresh_token_post = (req, res, next) => {
 exports.logout_post = (req, res, next) => {
   console.log(req.headers)
   console.log(req.user)
-  // req.logout doesn't work -> throws an internal server error (500)
-  // req.logout()
-  req.logout((err) => {
-    if (err) return next(err)
-    res.status(200).json("Logged out successfully!")
-  })
+
+  // remove refresh token from token array
   // const refreshToken = req.body.token
   // refreshTokens = refreshTokens.filter(token => token !== refreshToken)
-  // return res.status(200).json("Logged out successfully!")
+  return res.status(200).json("Logged out successfully!")
 }
