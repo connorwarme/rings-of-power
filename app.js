@@ -26,15 +26,14 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// commented out cookie parser on 7/15
-// app.use(cookieParser());
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({ 
     secret: "midnight", 
     resave: false, 
     saveUninitialized: true,
+    // this cookie option messes w/ session + google oauth login
+    // don't understand why, but cant be used
     // cookie: {
     //   sameSite: "none",
     //   secure: true,
