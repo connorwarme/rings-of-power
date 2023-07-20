@@ -136,10 +136,29 @@ exports.login_google = (req, res, next) => {
 
 // not sure if this is how i want to handle failure, but will follow up. going to make a simple route/fn in routes page
 exports.login_google_redirect = (req, res, next) => {
-  passport.authenticate('google', { 
-    successRedirect: 'http://localhost:5173/',
-    failureRedirect: 'http://localhost:5173/login', 
-    session: true, 
+  // passport.authenticate('google', { 
+  //   successRedirect: 'http://localhost:5173/',
+  //   failureRedirect: 'http://localhost:5173/login', 
+  //   session: true, 
+  passport.authenticate('google', (err, user, info) => {
+    if (err) {
+      res.redirect("http://localhost:5173/login")
+    } else {
+      if (user === false) {
+        const error = new Error()
+        error.msg = info.message
+        error.status = 404
+        return res.json({ errors: [error] })
+      } else {
+        // generate tokens
+        const accessToken = generateAccessToken(user)
+        const refreshToken = generateRefreshToken(user)
+        // add to array
+        refreshTokens.push(refreshToken)
+        console.log(accessToken)
+        return res.json({ user, accessToken, refreshToken })
+      }
+    }
   })(req, res, next)
 
 
