@@ -32,15 +32,16 @@ router.get("/google/redirect", auth_controller.login_google_redirect)
 // })
 router.get("/user", jwt.verifyToken, auth_controller.user_get)
 
-// this version works
-router.get("/oauth", (req, res, next) => {
-  // get the user 
-  const user = req.user
-  // make token
-  const token = jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "15m" })
-  // send back user and token (and eventually refresh token)
-  res.json({ user: req.user, token })
-})
+router.get("/oauth", auth_controller.oauth)
+// // this version works
+// router.get("/oauth", (req, res, next) => {
+//   // get the user 
+//   const user = req.user
+//   // make token
+//   const token = jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "15m" })
+//   // send back user and token (and eventually refresh token)
+//   res.send({ accessToken: token })
+// })
 
 // idea is that they click to sign in w/ oauth, a success redirects to this page, which quickly sends the cookie back to the server, send back token and navigate to home page
 

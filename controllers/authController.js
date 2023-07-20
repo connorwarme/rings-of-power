@@ -38,6 +38,15 @@ exports.user_get = (req, res) => {
   }
 }
 
+exports.oauth = (req, res, next) => {
+  // get the user 
+  const user = req.user
+  // make token
+  const token = jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "15m" })
+  // send back user and token (and eventually refresh token)
+  res.send({ accessToken: token })
+}
+
 // todo: don't think I need this route. local login will be on initial login route, along w/ btn for google and fb login
 // exports.login_local = asyncHandler(async (req, res, next) => {
 //   res.render("login", { title: "Login" })
