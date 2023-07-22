@@ -229,11 +229,13 @@ exports.refresh_token_post = (req, res, next) => {
 }
 
 // have to provide accessToken as authorization header && refreshToken in body as "token"
-// 
-exports.logout_post = (req, res, next) => {
-  console.log(req.headers)
-  console.log(req.user)
+// right now, it deletes token from state (client side)
+// and this logs out the session (if they signed in via oauth)
 
+exports.logout_post = (req, res, next) => {
+  // if user logged in via oauth, passport created a session -> need to logout
+  // need to run a check for session, then only run req.logout() for truthy
+  // req.logout()
   // remove refresh token from token array
   // const refreshToken = req.body.token
   // refreshTokens = refreshTokens.filter(token => token !== refreshToken)
