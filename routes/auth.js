@@ -1,6 +1,7 @@
 const express = require("express")
 const router = express.Router()
 const passport = require("passport")
+const passportConfig = require("../passport")
 
 const auth_controller = require("../controllers/authController")
 const jwt = require("../jwt")
@@ -30,7 +31,11 @@ router.get("/google/redirect", auth_controller.login_google_redirect)
 //     })
 //   }
 // })
-router.get("/user", jwt.verifyToken, auth_controller.user_get)
+// not sure why this wasn't working
+// tried a rewrite and things worked..?
+// I think that the old token had expired and by logging in anew things worked
+// router.get("/user", jwt.verifyToken, auth_controller.user_get)
+router.get("/user", passportConfig.authenticateToken, auth_controller.user_get)
 
 router.get("/oauth", auth_controller.oauth)
 // // this version works
