@@ -14,7 +14,7 @@ exports.verifyToken = (req, res, next) => {
   }
   jwt.verify(token, process.env.JWT_KEY, (err, data) => {
     if (err) {
-      const error = new Error("You don't have proper clearance :/")
+      const error = new Error("You don't have proper clearance!")
       error.status = 403
       return res.json({ errors: error })
     }

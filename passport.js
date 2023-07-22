@@ -190,7 +190,7 @@ exports.authenticateToken = (req, res, next) => {
   jwt.verify(token, process.env.JWT_KEY, (err, user) => {
     if (err) {
       return res.status(403).json({
-        message: "You don't have proper clearance :/"
+        message: "You don't have proper clearance!"
       })
     }
     req.user = user
