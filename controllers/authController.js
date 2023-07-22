@@ -235,7 +235,11 @@ exports.refresh_token_post = (req, res, next) => {
 exports.logout_post = (req, res, next) => {
   // if user logged in via oauth, passport created a session -> need to logout
   // need to run a check for session, then only run req.logout() for truthy
-  // req.logout()
+  // this check (req.session.user) doesn't work.
+  if (req.session.user) {
+    console.log('fireddddd')
+    req.logout()
+  }
   // remove refresh token from token array
   // const refreshToken = req.body.token
   // refreshTokens = refreshTokens.filter(token => token !== refreshToken)
