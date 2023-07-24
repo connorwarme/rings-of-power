@@ -7,8 +7,10 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/user")
 
 // jwt 
+// todo: change expiration length
+// and implement refresh tokens
 const generateAccessToken = (user) => {
-  return jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "15m" })
+  return jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "1500m" })
 }
 const generateRefreshToken = (user) => {
   return jwt.sign({ user }, process.env.JWT_REFRESH_KEY)
