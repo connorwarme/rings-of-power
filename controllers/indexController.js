@@ -289,9 +289,9 @@ exports.create_post = [
       content: req.body.content,
       author: req.user.user._id,
     })
-
+    console.log(errors)
     if (!errors.isEmpty()) {
-      res.json({ errors })
+      res.json({ errors: errors.errors })
     } else {
       await post.save()
       res.json({ user: req.user.user, post })
@@ -394,13 +394,15 @@ exports.delete_comment_post = asyncHandler(async (req, res, next) => {
       // need user to sign in to access page content
       const error = new Error("No token found.")
       error.status = 401
-      return res.json({ errors: error })
+      error.msg = error.message
+      return res.json({ errors: [ error ] })
     }
     jwt.verify(token, process.env.JWT_KEY, (err, user) => {
       if (err) {
         const error = new Error("You don't have proper clearance :/")
         error.status = 403
-        return res.json({ errors: error })
+        error.msg = error.message
+        return res.json({ errors: [ error ] })
       }
       req.user = user
       req.token = token
