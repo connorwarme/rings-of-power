@@ -327,17 +327,19 @@ exports.edit_post = [
   })
 ]
 exports.delete_post = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.body.postid).exec()
+  const post = await Post.findById(req.params.id).exec()
   if (post === null) {
     const error = new Error("Post not found in database.")
     error.status = 404
-    res.json({ errors: error })
+    error.msg = error.message
+    res.json({ errors: [ error ] })
   } else if (req.user.user._id != post.author) {
     const error = new Error("You aren't the creator of this post!")
     error.status = 403
-    res.json({ errors: error })
+    error.msg = error.message
+    res.json({ errors: [ error ] })
   } else {
-    await Post.findByIdAndDelete(req.body.postid)
+    await Post.findByIdAndDelete(req.params.id)
     res.json({ message: "Successfully deleted post."})
   }
 })
