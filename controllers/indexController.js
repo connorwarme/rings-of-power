@@ -352,6 +352,7 @@ exports.like_post = asyncHandler(async (req, res, next) => {
   if (likes.length > 0) {
     const error = new Error("You already like this post...")
     error.status = 401
+    error.msg = error.message
     res.json({ errors: [ error ] })
   } else {
     post.likes.push({ author: req.user.user._id })
@@ -363,12 +364,13 @@ exports.unlike_post = asyncHandler(async (req, res, next) => {
   // query post, check likes array 
   // if user doesn't already like, don't allow
   // otherwise, remove user id from likes array
-  const post = await Post.findById(req.body.postid).exec()
+  const post = await Post.findById(req.params.id).exec()
   const likes = post.likes.filter(item => item.author == req.user.user._id)
   if (likes.length == 0) {
     const error = new Error("You can't unlike a post you haven't liked to begin with!")
     error.status = 401
-    res.json({ errors: error })
+    error.msg = error.message
+    res.json({ errors: [ error ] })
   } else {
     post.likes = post.likes.filter(item => item.author != req.user.user._id)
     await post.save()
