@@ -298,6 +298,34 @@ exports.create_post = [
     }
   })
 ]
+exports.edit_post = [
+  body("title", "Post must have a title.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("content", "Post requires content.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(), 
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req)
+
+    const post = await Post.findById(req.params.id).exec()
+    console.log(post)
+
+    post.title = req.body.title
+    post.content = req.body.content
+
+    console.log(errors)
+    if (!errors.isEmpty()) {
+      res.json({ errors: errors.errors })
+    } else {
+      await post.save()
+      res.json({ user: req.user.user, post: post })
+    }
+  })
+]
 exports.delete_post = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.body.postid).exec()
   if (post === null) {

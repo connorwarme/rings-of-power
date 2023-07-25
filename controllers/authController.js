@@ -44,7 +44,7 @@ exports.oauth = (req, res, next) => {
   // get the user 
   const user = req.user
   // make token
-  const token = jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "15m" })
+  const token = jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "1500m" })
   // send back user and token (and eventually refresh token)
   res.send({ accessToken: token })
 }
