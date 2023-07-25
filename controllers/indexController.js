@@ -123,7 +123,7 @@ exports.profile_detail_get = asyncHandler(async(req, res, next) => {
 // should these two be bunched together? 
 // would make for only one db query, and just return an allposts and a someposts...
 exports.posts_all_get = asyncHandler(async(req, res, next) => {
-  const posts = await Post.find({}).exec()
+  const posts = await Post.find({}).populate("author").exec()
   res.json({ posts })
 })
 exports.posts_other_get = asyncHandler(async(req, res, next) => {
@@ -419,6 +419,7 @@ exports.delete_comment_post = asyncHandler(async (req, res, next) => {
 
   exports.verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization']
+    console.log(authHeader)
     const token = authHeader && authHeader.split(' ')[1]
     if (token == null) {
       // need user to sign in to access page content
