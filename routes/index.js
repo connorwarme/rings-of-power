@@ -53,7 +53,7 @@ router.post('/denyrequest', index_controller.verifyToken, index_controller.frien
 router.post('/createpost', index_controller.verifyToken, index_controller.create_post)
 router.post('/editpost/:id', index_controller.verifyToken, index_controller.edit_post)
 router.post('/deletepost/:id', index_controller.verifyToken, index_controller.delete_post)
-router.post('/likepost', index_controller.verifyToken, index_controller.like_post)
+router.post('/likepost/:id', index_controller.verifyToken, index_controller.like_post)
 router.post('/unlikepost', index_controller.verifyToken, index_controller.unlike_post)
 router.post('/addcomment', index_controller.verifyToken, index_controller.add_comment_post)
 router.post('/deletecomment', index_controller.verifyToken, index_controller.delete_comment_post)

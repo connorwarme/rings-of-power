@@ -347,12 +347,12 @@ exports.like_post = asyncHandler(async (req, res, next) => {
   // query post, check likes array
   // if user already liked, don't allow
   // otherwise, add user id to likes array
-  const post = await Post.findById(req.body.postid).exec()
+  const post = await Post.findById(req.params.id).exec()
   const likes = post.likes.filter(item => item.author == req.user.user._id)
   if (likes.length > 0) {
     const error = new Error("You already like this post...")
     error.status = 401
-    res.json({ errors: error })
+    res.json({ errors: [ error ] })
   } else {
     post.likes.push({ author: req.user.user._id })
     await post.save()
