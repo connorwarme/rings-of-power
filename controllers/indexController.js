@@ -391,7 +391,7 @@ exports.unlike_post = asyncHandler(async (req, res, next) => {
 exports.add_comment_post = [
   body("content", "Comment requires text.")
     .trim()
-    .isLength({ min: 1 })
+    .isLength({ min: 2 })
     .escape(),
 
   asyncHandler(async (req, res, next) => {
