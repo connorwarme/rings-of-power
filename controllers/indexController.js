@@ -271,6 +271,17 @@ exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
   
     res.json({ user: req.user.user, userList, otherList })
 })
+exports.post_get = asyncHandler(async (req, res, next) => {
+  const post = await Post.findById(req.params.id).populate("author").exec()
+  if (post === null) {
+    const error = new Error("Post not found in database.")
+    error.status = 404
+    error.msg = error.message
+    res.json({ errors: [ error ] })
+  } else {
+    res.json({ post })
+  }
+})
 exports.create_post = [
   body("title", "Post must have a title.")
     .trim()

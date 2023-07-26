@@ -50,6 +50,7 @@ router.post('/sendrequest', index_controller.verifyToken, index_controller.frien
 router.post('/acceptrequest', index_controller.verifyToken, index_controller.friends_accept_request_post)
 router.post('/denyrequest', index_controller.verifyToken, index_controller.friends_deny_request_post)
 
+router.get('/post/:id', index_controller.verifyToken, index_controller.post_get)
 router.post('/createpost', index_controller.verifyToken, index_controller.create_post)
 router.post('/editpost/:id', index_controller.verifyToken, index_controller.edit_post)
 router.post('/deletepost/:id', index_controller.verifyToken, index_controller.delete_post)
