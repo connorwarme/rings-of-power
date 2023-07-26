@@ -401,8 +401,9 @@ exports.add_comment_post = [
       author: req.user.user._id,
       content: req.body.content,
     }
+    console.log(comment)
     if (!errors.isEmpty()) {
-      res.json({ errors })
+      res.json({ errors: errors.errors })
     } else {
       const post = await Post.findById(req.body.postid).exec()
       post.comments.push(comment)
