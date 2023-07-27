@@ -58,6 +58,7 @@ router.post('/deletepost/:id', index_controller.verifyToken, index_controller.de
 router.post('/likepost/:id', index_controller.verifyToken, index_controller.like_post)
 router.post('/unlikepost/:id', index_controller.verifyToken, index_controller.unlike_post)
 router.post('/addcomment', index_controller.verifyToken, index_controller.add_comment_post)
+router.post('/editcomment', index_controller.verifyToken, index_controller.edit_comment_post)
 router.post('/deletecomment', index_controller.verifyToken, index_controller.delete_comment_post)
 
 

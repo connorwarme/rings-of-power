@@ -420,6 +420,28 @@ exports.add_comment_post = [
     }
   })
 ]
+exports.edit_comment_post = [
+  body("content", "Comment requires text.")
+    .trim()
+    .isLength({ min: 2 })
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req)
+    const post = await Post.findById(req.body.postid).exec()
+    const index = post.comments.findIndex(comment => comment._id === req.body.commentid)
+    console.log(index)
+    if (!errors.isEmpty()) {
+      res.json({ errors: errors.errors })
+    } else if (index == -1) {
+      res.json({ errors: [{status: 404, msg: "Did not find comment in database."}]})
+    } else {
+      post.comments[index].content = req.body.content 
+      await post.save()
+      res.json({ post })
+    }
+  })
+]
 exports.delete_comment_post = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.body.postid).exec()
   // would it be easiest to pass thru comment id in order to delete it specifically?
