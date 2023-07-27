@@ -157,6 +157,14 @@ const alreadyFriend = (friend_list, userid) => {
   }
   return answer
 }
+// query db to get comment author info
+exports.comment_author_get = asyncHandler(async(req, res, next) => {
+  const author = await User.findById(req.params.id).exec()
+  // do I need to handle a situation where nothing matches in db?
+  return res.json({ author })
+})
+
+
 // these next 3 functions could be refactored...a lot of repeated code
 // need to confirm that alreadyFriends works across the board
 // then refactor these..?
