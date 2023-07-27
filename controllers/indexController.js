@@ -429,8 +429,7 @@ exports.edit_comment_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req)
     const post = await Post.findById(req.body.postid).exec()
-    const index = post.comments.findIndex(comment => comment._id === req.body.commentid)
-    console.log(index)
+    const index = post.comments.findIndex(comment => comment._id == req.body.commentid)
     if (!errors.isEmpty()) {
       res.json({ errors: errors.errors })
     } else if (index == -1) {
@@ -444,15 +443,17 @@ exports.edit_comment_post = [
 ]
 exports.delete_comment_post = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.body.postid).exec()
-  // would it be easiest to pass thru comment id in order to delete it specifically?
+  // do I need to run this check? b/c it requires an extra query to db.. ?
   const comment = post.comments.filter(item => item._id == req.body.commentid)
   if (comment.length == 0) {
-    const error = new Error("Could not find comment in database.")
+    const error = new Error("Did not find comment in database.")
     error.status = 404
+    error.msg = error.message
     res.json({ errors: error })
   } else if (comment[0].author != req.user.user._id) {
     const error = new Error("You are not the author of this comment.")
     error.status = 403
+    error.msg = error.message
     res.json({ errors: error })
   } else {
     post.comments = post.comments.filter(item => item._id != req.body.commentid)
