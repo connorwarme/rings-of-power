@@ -112,11 +112,12 @@ exports.signup_post = [
 ]
 
 exports.profile_get = asyncHandler(async(req, res, next) => {
+  const user = await User.findById(req.user.user._id).populate("friend_list").exec()
   const posts = await Post.find({ author: req.user.user._id }).exec()
-  return res.json({ user: req.user.user, profile: req.user.user, posts })
+  return res.json({ user: req.user.user, profile: user, posts })
 })
 exports.profile_detail_get = asyncHandler(async(req, res, next) => {
-  const user = await User.findById(req.params.id).exec()
+  const user = await User.findById(req.params.id).populate("friend_list").exec()
   const posts = await Post.find({ author: req.params.id }).populate("author").exec()
   return res.json({ user: req.user.user, profile: user, posts })
 })
