@@ -50,7 +50,7 @@ router.get('/author/:id', index_controller.verifyToken, index_controller.comment
 router.post('/sendrequest', index_controller.verifyToken, index_controller.friends_send_request_post)
 router.post('/acceptrequest', index_controller.verifyToken, index_controller.friends_accept_request_post)
 router.post('/denyrequest', index_controller.verifyToken, index_controller.friends_deny_request_post)
-router.post('/deleterequest', index_controller.verifyToken, index_controller.friends_delete_post)
+router.post('/deletefriend', index_controller.verifyToken, index_controller.friends_delete_post)
 
 router.get('/post/:id', index_controller.verifyToken, index_controller.post_get)
 router.post('/createpost', index_controller.verifyToken, index_controller.create_post)
