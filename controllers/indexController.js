@@ -177,7 +177,8 @@ exports.friends_send_request_post = asyncHandler(async(req, res, next) => {
   if (already[0]) {
     const error = new Error(already[1])
     error.status = 403
-    res.json({ errors: error })
+    error.msg = error.message
+    res.json({ errors: [ error ] })
   } else {
     // create new friend list, but use same _id
     const user_newlist = new Friends({
@@ -279,6 +280,37 @@ exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
     ]) 
   
     res.json({ user: req.user.user, userList, otherList })
+})
+
+// just wrote this (8/1), haven't tested yet.
+exports.friends_delete_post = asyncHandler(async(req, res, next) => {
+  // get user's friend list
+  const [ user_list, other_user ] = await Promise.all([
+    Friends.findById(req.user.user.friend_list).exec(),
+    User.findById(req.body.userid).populate("Friends").exec(),
+  ])
+  // copy list (but same _id), remove id from user's friend list
+  const user_newlist = new Friends({
+    list: user_list.list.filter(id => id != other_user._id.toString()),
+    pending: user_list.pending,
+    request: user_list.request,
+    _id: user_list._id,
+  })
+    // copy list (but same _id), remove id from other user's friend list
+  const other_newlist = new Friends({
+    list: other_user.friend_list.list.filter(id => id != req.user.user._id.toString()),
+    pending: other_user.friend_list.pending,
+    request: other_user.friend_list.request,
+    _id: other_user.friend_list._id,
+  })
+
+  // update both lists on the database
+  const [userList, otherList] = await Promise.all([
+    Friends.findByIdAndUpdate(req.user.user.friend_list, user_newlist, { new: true }).exec(),
+    Friends.findByIdAndUpdate(other_user.friend_list, other_newlist, { new: true }).exec(),
+  ]) 
+  
+  res.json({ user: req.user.user, userList, otherList })
 })
 exports.post_get = asyncHandler(async (req, res, next) => {
   const post = await Post.findById(req.params.id).populate("author").exec()
