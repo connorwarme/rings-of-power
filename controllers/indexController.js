@@ -250,7 +250,7 @@ exports.friends_accept_request_post = asyncHandler(async(req, res, next) => {
   res.json({ user: req.user.user, userList, otherList })
 })
 
-// todo: no longer need this -> refactored into a delete userid from all list arrays
+// todo: no longer need this -> refactored into a delete userid from all list arrays !!
 exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
     // get user's friend list
     const user_list = await Friends.findById(req.user.user.friend_list).exec()
@@ -283,7 +283,6 @@ exports.friends_deny_request_post = asyncHandler(async(req, res, next) => {
     res.json({ user: req.user.user, userList, otherList })
 })
 
-// just wrote this (8/1), haven't tested yet.
 exports.friends_delete_post = asyncHandler(async(req, res, next) => {
   // get user's friend list
   const [ user_list, other_user ] = await Promise.all([
@@ -304,6 +303,8 @@ exports.friends_delete_post = asyncHandler(async(req, res, next) => {
     request: other_user.friend_list.request.filter(id => id != req.user.user._id.toString()),
     _id: other_user.friend_list._id,
   })
+  console.log(user_newlist)
+  console.log(other_newlist)
 
   // update both lists on the database
   const [userList, otherList] = await Promise.all([

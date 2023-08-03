@@ -23,15 +23,16 @@ exports.login = asyncHandler(async (req, res, next) => {
   res.status(200).json({ title: "Login on auth!" })
 })
 
-exports.user_get = (req, res) => {
+exports.user_get = async (req, res) => {
   if (req.user) {
     // generate tokens
     // const accessToken = generateAccessToken(req.user)
     // const refreshToken = generateRefreshToken(req.user)
     // // add to array
     // refreshTokens.push(refreshToken)
+    const user = await User.findById(req.user.user._id).populate("friend_list").exec()
     return res.send({
-      user: req.user,
+      user: user,
       // access: accessToken,
       // refresh: refreshToken,
     })
