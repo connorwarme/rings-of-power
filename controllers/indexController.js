@@ -499,9 +499,9 @@ exports.delete_comment_post = asyncHandler(async (req, res, next) => {
 
   exports.verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization']
-    console.log(authHeader)
+    console.log(`authHeader is: ${authHeader.split(' ')[1]}`)
     const token = authHeader && authHeader.split(' ')[1]
-    if (token == null) {
+    if (token == 'null') {
       // need user to sign in to access page content
       const error = new Error("No token found.")
       error.status = 401
