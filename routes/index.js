@@ -41,6 +41,7 @@ router.post('/refresh', (req, res, next) => {
 
 router.get('/profile', index_controller.verifyToken, index_controller.profile_get)
 router.get('/profile/:id', index_controller.verifyToken, index_controller.profile_detail_get)
+router.post('/profile/update', index_controller.verifyToken, index_controller.profile_update_post)
 router.get('/posts', index_controller.verifyToken, index_controller.posts_all_get)
 router.get('/other-posts', index_controller.verifyToken, index_controller.posts_other_get)
 

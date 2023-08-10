@@ -121,6 +121,38 @@ exports.profile_detail_get = asyncHandler(async(req, res, next) => {
   const posts = await Post.find({ author: req.params.id }).populate("author").exec()
   return res.json({ user: req.user.user, profile: user, posts })
 })
+exports.profile_update_post = [
+  body("first_name", "Please add your first name.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("family_name", "Please add your family name.")
+    .trim()
+    .isLength({ min: 1 })
+    .escape(),
+  body("picture", "Please add your profile picture url.")
+    .trim()
+    .isLength({ min: 1 })
+    .isURL()
+    .withMessage("Must be a valid url!")
+    .escape(),
+
+  asyncHandler(async (req, res, next) => {
+    const errors = validationResult(req)
+    const oldUser = await User.findById(req.body.userid).exec()
+
+    oldUser.first_name = req.body.first_name
+    oldUser.family_name = req.body.family_name
+    oldUser.picture = req.body.picture
+
+    if (!errors.isEmpty()) {
+      return res.json({ errors: errors.array(), oldUser })
+    } else {
+      await oldUser.save()
+      return res.json({ profile: oldUser })
+    }
+  })
+]
 // should these two be bunched together? 
 // would make for only one db query, and just return an allposts and a someposts...
 exports.posts_all_get = asyncHandler(async(req, res, next) => {
