@@ -130,11 +130,11 @@ exports.profile_update_post = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
-  body("picture", "Please add your profile picture url.")
+  body("picture")
     .trim()
-    .isLength({ min: 1 })
+    .optional({ values: 'falsy' })
     .isURL()
-    .withMessage("Must be a valid url!")
+    .withMessage("If provided, profile picture must be a valid url!")
     .escape(),
 
   asyncHandler(async (req, res, next) => {
