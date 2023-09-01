@@ -134,8 +134,7 @@ exports.profile_update_post = [
     .trim()
     .optional({ values: 'falsy' })
     .isURL()
-    .withMessage("If provided, profile picture must be a valid url!")
-    .escape(),
+    .withMessage("If provided, profile picture must be a valid url!"),
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req)
