@@ -138,7 +138,7 @@ exports.profile_update_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req)
-    const oldUser = await User.findById(req.body.userid).exec()
+    const oldUser = await User.findById(req.body.userid).populate("friend_list").exec()
 
     oldUser.first_name = req.body.first_name
     oldUser.family_name = req.body.family_name
@@ -164,6 +164,11 @@ exports.posts_other_get = asyncHandler(async(req, res, next) => {
     return item.author != req.user.user._id
   })
   res.json({ posts: others })
+})
+
+exports.users_get = asyncHandler(async(req, res, next) => {
+  const usersList = await User.find({}).exec()
+  res.json({ users: usersList })
 })
 
 exports.friends_get = asyncHandler(async(req, res, next) => {
