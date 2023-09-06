@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken")
 const User = require("../models/user")
 const Friends = require("../models/friends")
 const Post = require("../models/post")
+const Photo = require("../models/photo")
 
 exports.login_get = asyncHandler(async (req, res, next) => {
   if (!req.token) {
@@ -532,6 +533,35 @@ exports.delete_comment_post = asyncHandler(async (req, res, next) => {
     res.json({ post })
   }
 })
+
+exports.uploadphoto_post = asyncHandler(async(req, res, next) => {
+  const upload = req.body.photo
+  console.log(upload)
+  if (upload == null) return
+  const photoData = JSON.parse(upload)
+  if (photoData != null && imageMimeTypes.includes(photoData.type)) {
+    const photo = new Photo({
+      photo: new Buffer.from(photoData.data, 'base64'),
+      photoType: photoData.type
+    })
+    await photo.save()
+    res.send(`${photo._id}`)
+  }
+})
+
+const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
+const savePhoto = async (profile, photoEncoded) => {
+  if (photoEncoded == null) return
+  const photo = JSON.parse(photoEncoded)
+  if (photo != null && imageMimeTypes.includes(photo.type)) {
+    const image = new Photo({
+      photo: new Buffer.from(photo.data, 'base64'),
+      photoType: photo.type,
+    })
+    await image.save()
+    profile.photo = image._id
+  }
+}
 
   exports.verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization']
