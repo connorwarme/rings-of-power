@@ -144,6 +144,7 @@ exports.profile_update_post = [
     oldUser.first_name = req.body.first_name
     oldUser.family_name = req.body.family_name
     oldUser.picture = req.body.picture
+    console.log(req.body.photo)
 
     if (!errors.isEmpty()) {
       return res.json({ errors: errors.array(), oldUser })
