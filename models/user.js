@@ -44,6 +44,11 @@ const UserSchema = new Schema({
     type: String,
     required: false,
   },
+  photo: {
+    type: Schema.Types.ObjectId,
+    ref: "Photo",
+    required: false,
+  },
   friend_list: {
     type: Schema.Types.ObjectId,
     ref: "Friends",
