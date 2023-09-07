@@ -144,13 +144,25 @@ exports.profile_update_post = [
     oldUser.first_name = req.body.first_name
     oldUser.family_name = req.body.family_name
     oldUser.picture = req.body.picture
-    console.log(req.body.photo)
+
+    let image;
+
+    const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
+      if (req.body.photo != null && imageMimeTypes.includes(req.body.photo.type)) {
+        image = new Photo({
+          photo: new Buffer.from(req.body.photo.data, 'base64'),
+          photoType: req.body.photo.type,
+        })
+        await image.save()
+        oldUser.photo = image._id
+      }
+
 
     if (!errors.isEmpty()) {
       return res.json({ errors: errors.array(), oldUser })
     } else {
       await oldUser.save()
-      return res.json({ profile: oldUser })
+      return res.json({ profile: oldUser, photo: image, photoPath: image.photoImagePath })
     }
   })
 ]
@@ -551,16 +563,17 @@ exports.uploadphoto_post = asyncHandler(async(req, res, next) => {
 })
 
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
-const savePhoto = async (profile, photoEncoded) => {
-  if (photoEncoded == null) return
-  const photo = JSON.parse(photoEncoded)
-  if (photo != null && imageMimeTypes.includes(photo.type)) {
+const savePhoto = async (profile, reqPhoto) => {
+  if (reqPhoto == null) return
+  // const photo = JSON.parse(photoEncoded)
+  if (imageMimeTypes.includes(reqPhoto.type)) {
     const image = new Photo({
-      photo: new Buffer.from(photo.data, 'base64'),
-      photoType: photo.type,
+      photo: new Buffer.from(reqPhoto.data, 'base64'),
+      photoType: reqPhoto.type,
     })
     await image.save()
     profile.photo = image._id
+    await profile.save()
   }
 }
 
