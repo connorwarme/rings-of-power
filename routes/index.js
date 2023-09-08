@@ -65,6 +65,6 @@ router.post('/addcomment', index_controller.verifyToken, index_controller.add_co
 router.post('/editcomment', index_controller.verifyToken, index_controller.edit_comment_post)
 router.post('/deletecomment', index_controller.verifyToken, index_controller.delete_comment_post)
 
-router.post('/uploadphoto', index_controller.uploadphoto_post)
+router.get('/photopath/:id', index_controller.photopath_get)
 
 module.exports = router;

@@ -547,19 +547,11 @@ exports.delete_comment_post = asyncHandler(async (req, res, next) => {
   }
 })
 
-exports.uploadphoto_post = asyncHandler(async(req, res, next) => {
-  const upload = req.body.photo
-  console.log(upload)
-  if (upload == null) return
-  const photoData = JSON.parse(upload)
-  if (photoData != null && imageMimeTypes.includes(photoData.type)) {
-    const photo = new Photo({
-      photo: new Buffer.from(photoData.data, 'base64'),
-      photoType: photoData.type
-    })
-    await photo.save()
-    res.send(`${photo._id}`)
-  }
+exports.photopath_get = asyncHandler(async(req, res, next) => {
+  const photo = await Photo.findById(req.params.id).exec()
+  console.log(photo.photoImagePath)
+
+  return res.json({ photo })
 })
 
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
