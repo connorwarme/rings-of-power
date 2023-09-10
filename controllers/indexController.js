@@ -549,9 +549,8 @@ exports.delete_comment_post = asyncHandler(async (req, res, next) => {
 
 exports.photopath_get = asyncHandler(async(req, res, next) => {
   const photo = await Photo.findById(req.params.id).exec()
-  console.log(photo.photoImagePath)
 
-  return res.json({ photo })
+  return res.json({ photo, photoPath: photo.photoImagePath })
 })
 
 const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
