@@ -30,9 +30,12 @@ exports.user_get = async (req, res) => {
     // const refreshToken = generateRefreshToken(req.user)
     // // add to array
     // refreshTokens.push(refreshToken)
-    const user = await User.findById(req.user.user._id).populate("friend_list").exec()
+    const user = await User.findById(req.user.user._id).populate("friend_list").populate("photo").exec()
+    const photo = user.photo ? user.photo.photoImagePath : null
+    console.log(photo)
     return res.send({
       user: user,
+      photo: photo,
       // access: accessToken,
       // refresh: refreshToken,
     })
