@@ -1,5 +1,6 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios')
 require("../passport")
 
 const index_controller = require("../controllers/indexController")
@@ -64,6 +65,64 @@ router.post('/unlikepost/:id', index_controller.verifyToken, index_controller.un
 router.post('/addcomment', index_controller.verifyToken, index_controller.add_comment_post)
 router.post('/editcomment', index_controller.verifyToken, index_controller.edit_comment_post)
 router.post('/deletecomment', index_controller.verifyToken, index_controller.delete_comment_post)
+
+router.get('/mock', async (req, res) => {
+  console.log('fired')
+  const photo = await getPhoto("https://avatars.githubusercontent.com/u/43254103?v=4")
+  console.log(photo)
+  res.json({ photo: photo })
+})
+
+const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
+  console.log('get type fired')
+  const uint8arr = new Uint8Array(arrayBuffer)
+  console.log(uint8arr.length)
+  const len = 4
+  if (uint8arr.length >= len) {
+    let signatureArr = new Array(len)
+    for (let i = 0; i < len; i++)
+      signatureArr[i] = (new Uint8Array(arrayBuffer))[i].toString(16)
+    const signature = signatureArr.join('').toUpperCase()
+    console.log(`signature is: ${signature}`)
+    switch (signature) {
+      case '89504E47':
+        return 'image/png'
+      case '47494638':
+        return 'image/gif'
+      case 'FFD8FFDB':
+      case 'FFD8FFE0':
+        return 'image/jpeg'
+      default:
+        return null
+    }
+  }
+  return null
+}
+const getPhoto = async (url) => {
+  console.log('get photo fired')
+  axios({
+    url,
+    method: 'GET',
+    type: 'arraybuffer'
+  })
+  .then(res => {
+    // console.log(res.data)
+    if (res.status === 200 && res.data) {
+      // handle arraybuffer
+      // stack eg has it as Buffer.from(new Uint8Array(res.data)) // also seen Buffer.from(res.data, 'binary')
+      // const uint8array = new Uint8Array(res.data)
+      const buffer = Buffer.from(res.data)
+      // console.log(Buffer.isBuffer(buffer))
+      const type = getMimeTypeFromArrayBuffer(buffer)
+      console.log(type)
+      // return [buffer, type]
+    }
+  })
+  .catch(err => {
+    console.log(err)
+    return err
+  })
+}
 
 router.get('/photopath/:id', index_controller.photopath_get)
 

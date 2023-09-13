@@ -12,6 +12,8 @@ const jwt = require("jsonwebtoken")
 const session = require("express-session")
 const User = require('./models/user')
 const Friends = require("./models/friends")
+const Photo = require("./models/photo")
+const axios = require("axios")
 
 const facebook = {
   clientID: process.env.FB_APP_ID,
@@ -25,13 +27,33 @@ const facebook = {
   profileFields: ['id', 'emails', 'name', 'picture.type(large)'] //scope of fields
 }
 // might be able to build this into facebook strategy fn
-const formatFB = (profile) => {
+// trying to work on accepting fb profile image and save to db
+// const formatFB = (profile) => {
+//   return {
+//     first_name: profile.first_name,
+//     family_name: profile.last_name,
+//     email: profile.email,
+//     picture: profile.picture.data.url,
+//     fbid: profile.id,
+//   }
+// }
+const formatFB = async (profile) => {
+  let photo = null
+  if (profile.picture.data.url) {
+    const getObject = await getPhoto(profile.picture.data.url)
+    photo = new Photo({
+      photo: getObject.buffer,
+      photoType: getObject.type,
+    })
+    await photo.save()
+  } 
   return {
     first_name: profile.first_name,
     family_name: profile.last_name,
     email: profile.email,
     picture: profile.picture.data.url,
     fbid: profile.id,
+    photo: photo ? photo._id : null
   }
 }
 
@@ -195,5 +217,48 @@ exports.authenticateToken = (req, res, next) => {
     }
     req.user = user
     next()
+  })
+}
+
+const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
+  const uint8arr = new Uint8Array(arrayBuffer)
+  const len = 4
+  if (uint8arr.length >= len) {
+    let signatureArr = new Array(len)
+    for (let i = 0; i < len; i++)
+      signatureArr[i] = (new Uint8Array(arrayBuffer))[i].toString(16)
+    const signature = signatureArr.join('').toUpperCase()
+    switch (signature) {
+      case '89504E47':
+        return 'image/png'
+      case '47494638':
+        return 'image/gif'
+      case 'FFD8FFDB':
+      case 'FFD8FFE0':
+        return 'image/jpeg'
+      default:
+        return null
+    }
+  }
+  return null
+}
+const getPhoto = async (url) => {
+  axios({
+    url,
+    method: 'GET',
+    type: 'arraybuffer'
+  })
+  .then(res => {
+    if (res.status === 200 && res.data) {
+      // handle arraybuffer
+      // stack eg has it as Buffer.from(new Uint8Array(res.data))
+      const buffer = Buffer.from(res.data, 'binary')
+      const type = getMimeTypeFromArrayBuffer(res.data)
+      return { buffer, type }
+    }
+  })
+  .catch(err => {
+    console.log(err)
+    return err
   })
 }
