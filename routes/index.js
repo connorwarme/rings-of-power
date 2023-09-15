@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const axios = require('axios')
+const fs = require('fs')
 require("../passport")
 
 const index_controller = require("../controllers/indexController")
@@ -67,10 +68,11 @@ router.post('/editcomment', index_controller.verifyToken, index_controller.edit_
 router.post('/deletecomment', index_controller.verifyToken, index_controller.delete_comment_post)
 
 router.get('/mock', async (req, res) => {
-  console.log('fired')
-  const photo = await getPhoto("https://avatars.githubusercontent.com/u/43254103?v=4")
-  console.log(photo)
-  res.json({ photo: photo })
+  const photo = await b64("https://avatars.githubusercontent.com/u/43254103?v=4")
+  const uint8 = new Uint8Array({...photo})
+  const type = getMimeTypeFromArrayBuffer(photo)
+  const buffer = Buffer.from(new Uint8Array(photo))
+  res.json({ photo: buffer })
 })
 
 const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
@@ -98,31 +100,46 @@ const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
   }
   return null
 }
-const getPhoto = async (url) => {
-  console.log('get photo fired')
-  axios({
-    url,
-    method: 'GET',
-    type: 'arraybuffer'
-  })
-  .then(res => {
-    // console.log(res.data)
-    if (res.status === 200 && res.data) {
+
+const b64 = async (url) => {
+  const response = await fetch(url)
+  return response.arrayBuffer()
+  }
+// const getPhoto = async (url) => {
+//   console.log('get photo fired')
+//   fetch(url)
+//   .then(res => {
+//     console.log(typeof(res.data))
+//     const blob = res.blob()
+//     const reader = new FileReader()
+//     reader.readAsDataURL(blob)
+//     reader.onloadend = () => {
+//       const base64data = reader.result
+//       console.log(base64data)
+//     }
+    // const type = getMimeTypeFromArrayBuffer(buffer)
+  // })
+      // const buffer = Buffer.from(res.data)
+      // const uint8array = new Uint8Array(buffer)
+      // console.log(buffer.keys())
+      // console.log(res.data == buffer)
+      // const uint8array = new Uint8Array(res.data)
+      // console.log(uint8array.length)
       // handle arraybuffer
       // stack eg has it as Buffer.from(new Uint8Array(res.data)) // also seen Buffer.from(res.data, 'binary')
       // const uint8array = new Uint8Array(res.data)
-      const buffer = Buffer.from(res.data)
+      // const type = getMimeTypeFromArrayBuffer(res.data)
+      // const buffer = Buffer.from(res.data, 'binary')
       // console.log(Buffer.isBuffer(buffer))
-      const type = getMimeTypeFromArrayBuffer(buffer)
-      console.log(type)
+      // const buffer = ''
+      // console.log(type)
       // return [buffer, type]
-    }
-  })
-  .catch(err => {
-    console.log(err)
-    return err
-  })
-}
+
+//   .catch(err => {
+//     console.log(err)
+//     return err
+//   })
+// }
 
 router.get('/photopath/:id', index_controller.photopath_get)
 

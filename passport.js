@@ -243,22 +243,26 @@ const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
   return null
 }
 const getPhoto = async (url) => {
-  axios({
+  const response = await axios({
     url,
     method: 'GET',
     type: 'arraybuffer'
   })
-  .then(res => {
-    if (res.status === 200 && res.data) {
-      // handle arraybuffer
-      // stack eg has it as Buffer.from(new Uint8Array(res.data))
-      const buffer = Buffer.from(res.data, 'binary')
-      const type = getMimeTypeFromArrayBuffer(res.data)
-      return { buffer, type }
-    }
-  })
-  .catch(err => {
-    console.log(err)
-    return err
-  })
+  const buffer = Buffer.from(response.data, 'binary')
+  const type = getMimeTypeFromArrayBuffer(response.data)
+
+  return { data: response.data, buffer, type }
+  // .then(res => {
+  //   if (res.status === 200 && res.data) {
+  //     // handle arraybuffer
+  //     // stack eg has it as Buffer.from(new Uint8Array(res.data))
+  //     const buffer = Buffer.from(res.data, 'binary')
+  //     const type = getMimeTypeFromArrayBuffer(res.data)
+  //     return { buffer, type }
+  //   }
+  // })
+  // .catch(err => {
+  //   console.log(err)
+  //   return err
+  // })
 }
