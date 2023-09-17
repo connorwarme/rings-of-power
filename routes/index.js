@@ -68,22 +68,19 @@ router.post('/editcomment', index_controller.verifyToken, index_controller.edit_
 router.post('/deletecomment', index_controller.verifyToken, index_controller.delete_comment_post)
 
 router.get('/mock', async (req, res) => {
-  const photo = await b64("https://avatars.githubusercontent.com/u/43254103?v=4")
-  const uint8 = new Uint8Array({...photo})
-  const type = getMimeTypeFromArrayBuffer(photo)
-  const buffer = Buffer.from(new Uint8Array(photo))
-  res.json({ photo: buffer })
+  const photo = await getArrayBuffer("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNDB4bDZzM3VqZ211cThjbDV4cGYxNDJ2YmgyMzduaHBrdjVsaXNhaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lszAB3TzFtRaU/giphy.gif")
+  const uint8 = new Uint8Array(photo)
+  const type = getMimeTypeFromArrayBuffer(uint8)
+  const buffer = Buffer.from(uint8)
+  res.json({ buffer, type })
 })
 
-const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
-  console.log('get type fired')
-  const uint8arr = new Uint8Array(arrayBuffer)
-  console.log(uint8arr.length)
+const getMimeTypeFromArrayBuffer = (uint8arr) => {
   const len = 4
   if (uint8arr.length >= len) {
     let signatureArr = new Array(len)
     for (let i = 0; i < len; i++)
-      signatureArr[i] = (new Uint8Array(arrayBuffer))[i].toString(16)
+      signatureArr[i] = (uint8arr)[i].toString(16)
     const signature = signatureArr.join('').toUpperCase()
     console.log(`signature is: ${signature}`)
     switch (signature) {
@@ -101,45 +98,10 @@ const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
   return null
 }
 
-const b64 = async (url) => {
+const getArrayBuffer = async (url) => {
   const response = await fetch(url)
   return response.arrayBuffer()
   }
-// const getPhoto = async (url) => {
-//   console.log('get photo fired')
-//   fetch(url)
-//   .then(res => {
-//     console.log(typeof(res.data))
-//     const blob = res.blob()
-//     const reader = new FileReader()
-//     reader.readAsDataURL(blob)
-//     reader.onloadend = () => {
-//       const base64data = reader.result
-//       console.log(base64data)
-//     }
-    // const type = getMimeTypeFromArrayBuffer(buffer)
-  // })
-      // const buffer = Buffer.from(res.data)
-      // const uint8array = new Uint8Array(buffer)
-      // console.log(buffer.keys())
-      // console.log(res.data == buffer)
-      // const uint8array = new Uint8Array(res.data)
-      // console.log(uint8array.length)
-      // handle arraybuffer
-      // stack eg has it as Buffer.from(new Uint8Array(res.data)) // also seen Buffer.from(res.data, 'binary')
-      // const uint8array = new Uint8Array(res.data)
-      // const type = getMimeTypeFromArrayBuffer(res.data)
-      // const buffer = Buffer.from(res.data, 'binary')
-      // console.log(Buffer.isBuffer(buffer))
-      // const buffer = ''
-      // console.log(type)
-      // return [buffer, type]
-
-//   .catch(err => {
-//     console.log(err)
-//     return err
-//   })
-// }
 
 router.get('/photopath/:id', index_controller.photopath_get)
 
