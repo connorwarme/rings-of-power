@@ -220,6 +220,14 @@ exports.authenticateToken = (req, res, next) => {
   })
 }
 
+// stock account image _id: 65073de65f81b51fc4fc9059
+// IF oauth login profile has a url for profile picture, try to fetch arraybuffer
+// then try to discover mimetype and make a buffer
+// if that works, then save to db
+// if it fails at any point, give the user account the stock image _id instead
+// otherwise, give it the new photo _id
+
+
 const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
   const uint8arr = new Uint8Array(arrayBuffer)
   const len = 4
