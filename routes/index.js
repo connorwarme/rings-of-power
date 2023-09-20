@@ -101,7 +101,7 @@ const getMimeTypeFromArrayBuffer = (uint8arr) => {
 const getArrayBuffer = async (url) => {
   const response = await fetch(url)
   return response.arrayBuffer()
-  }
+}
 
 router.get('/photopath/:id', index_controller.photopath_get)
 

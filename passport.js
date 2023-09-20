@@ -40,12 +40,14 @@ const facebook = {
 const formatFB = async (profile) => {
   let photo = null
   if (profile.picture.data.url) {
-    const getObject = await getPhoto(profile.picture.data.url)
-    photo = new Photo({
-      photo: getObject.buffer,
-      photoType: getObject.type,
-    })
-    await photo.save()
+    const getObject = await getUserPhoto(profile.picture.data.url)
+    if (getObject.buffer && getObject.type) {
+      photo = new Photo({
+        photo: getObject.buffer,
+        photoType: getObject.type,
+      })
+      await photo.save()
+    }
   } 
   return {
     first_name: profile.first_name,
@@ -53,7 +55,7 @@ const formatFB = async (profile) => {
     email: profile.email,
     picture: profile.picture.data.url,
     fbid: profile.id,
-    photo: photo ? photo._id : null
+    photo: photo ? photo._id : '65073de65f81b51fc4fc9059',
   }
 }
 
@@ -227,15 +229,25 @@ exports.authenticateToken = (req, res, next) => {
 // if it fails at any point, give the user account the stock image _id instead
 // otherwise, give it the new photo _id
 
+// started to implement on fb user
+// need to test it - first need to delete current fb user so that it builds a new one...
+// see if it works. 
+const getUserPhoto = async (photoUrl) => {
+  const photo = await getArrayBuffer(photoUrl)
+  const uint8 = new Uint8Array(photo)
+  const type = getMimeTypeFromUint8Array(uint8)
+  const buffer = Buffer.from(uint8)
+  return ({ buffer, type })
+}
 
-const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
-  const uint8arr = new Uint8Array(arrayBuffer)
+const getMimeTypeFromUint8Array = (uint8arr) => {
   const len = 4
   if (uint8arr.length >= len) {
     let signatureArr = new Array(len)
     for (let i = 0; i < len; i++)
-      signatureArr[i] = (new Uint8Array(arrayBuffer))[i].toString(16)
+      signatureArr[i] = (uint8arr)[i].toString(16)
     const signature = signatureArr.join('').toUpperCase()
+    console.log(`signature is: ${signature}`)
     switch (signature) {
       case '89504E47':
         return 'image/png'
@@ -250,27 +262,34 @@ const getMimeTypeFromArrayBuffer = (arrayBuffer) => {
   }
   return null
 }
-const getPhoto = async (url) => {
-  const response = await axios({
-    url,
-    method: 'GET',
-    type: 'arraybuffer'
-  })
-  const buffer = Buffer.from(response.data, 'binary')
-  const type = getMimeTypeFromArrayBuffer(response.data)
 
-  return { data: response.data, buffer, type }
-  // .then(res => {
-  //   if (res.status === 200 && res.data) {
-  //     // handle arraybuffer
-  //     // stack eg has it as Buffer.from(new Uint8Array(res.data))
-  //     const buffer = Buffer.from(res.data, 'binary')
-  //     const type = getMimeTypeFromArrayBuffer(res.data)
-  //     return { buffer, type }
-  //   }
-  // })
-  // .catch(err => {
-  //   console.log(err)
-  //   return err
-  // })
+const getArrayBuffer = async (url) => {
+  const response = await fetch(url)
+  return response.arrayBuffer()
 }
+
+
+// const getPhoto = async (url) => {
+//   const response = await axios({
+//     url,
+//     method: 'GET',
+//     type: 'arraybuffer'
+//   })
+//   const buffer = Buffer.from(response.data, 'binary')
+//   const type = getMimeTypeFromArrayBuffer(response.data)
+
+//   return { data: response.data, buffer, type }
+//   // .then(res => {
+//   //   if (res.status === 200 && res.data) {
+//   //     // handle arraybuffer
+//   //     // stack eg has it as Buffer.from(new Uint8Array(res.data))
+//   //     const buffer = Buffer.from(res.data, 'binary')
+//   //     const type = getMimeTypeFromArrayBuffer(res.data)
+//   //     return { buffer, type }
+//   //   }
+//   // })
+//   // .catch(err => {
+//   //   console.log(err)
+//   //   return err
+//   // })
+// }
