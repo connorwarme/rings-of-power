@@ -48,7 +48,8 @@ const formatFB = async (profile) => {
       })
       await photo.save()
     }
-  } 
+  }
+  console.log(profile) 
   return {
     first_name: profile.first_name,
     family_name: profile.last_name,
@@ -106,9 +107,9 @@ passport.use(
     facebook,
     // need to set session to false? 
     async (accessToken, refreshToken, profile, done) => {
-      console.log(profile)
-       const fbUser = formatFB(profile._json)
-       try {
+      const fbUser = await formatFB(profile._json)
+      console.log(fbUser)
+      try {
         const user = await User.findOne({ email: fbUser.email })
         if (!user) {
           const friendList = new Friends({
@@ -127,6 +128,7 @@ passport.use(
             },
             picture: fbUser.picture,
             friend_list: friendList,
+            photo: fbUser.photo,
           })
           await friendList.save()
           await newUser.save()
