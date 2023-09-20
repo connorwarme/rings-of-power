@@ -129,7 +129,7 @@ exports.login_facebook = (req, res, next) => {
 
 exports.login_facebook_redirect = (req, res, next) => {
   passport.authenticate('facebook', {
-    successRedirect: 'http://localhost:5173/',
+    successRedirect: 'http://localhost:5173/auth/success',
     failureRedirect: 'http://localhost:5173/login', 
     session: true, 
   })(req, res, next)
