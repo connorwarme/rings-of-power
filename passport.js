@@ -49,7 +49,6 @@ const formatFB = async (profile) => {
       await photo.save()
     }
   }
-  console.log(profile) 
   return {
     first_name: profile.first_name,
     family_name: profile.last_name,
@@ -66,13 +65,25 @@ const google = {
   //todo: based on env, change url to localhost, dev or prod
   callbackURL: "http://localhost:3000/auth/google/redirect",
 }
-const formatG = (profile) => {
+const formatG = async (profile) => {
+  let photo = null
+  if (profile.picture.data.url) {
+    const getObject = await getUserPhoto(profile.picture.data.url)
+    if (getObject.buffer && getObject.type) {
+      photo = new Photo({
+        photo: getObject.buffer,
+        photoType: getObject.type,
+      })
+      await photo.save()
+    }
+  }
   return {
     first_name: profile.given_name,
     family_name: profile.family_name,
     email: profile.email,
     picture: profile.picture.replace("=s96-c", "") || null,
-    googleid: profile.sub
+    googleid: profile.sub,
+    photo: photo._id,
   }
 }
 
@@ -149,7 +160,7 @@ passport.use(
     google, 
     async(accessToken, refreshToken, profile, done) => {
       console.log(profile)
-      const googleUser = formatG(profile._json)
+      const googleUser = await formatG(profile._json)
       try {
         const user = await User.findOne({ email: googleUser.email })
         if (!user) {
@@ -170,6 +181,7 @@ passport.use(
             },
             picture: googleUser.picture,
             friend_list: friendList,
+            photo: googleUser.photo,
           })
           await friendList.save()
           await newUser.save()
@@ -224,7 +236,6 @@ exports.authenticateToken = (req, res, next) => {
   })
 }
 
-// stock account image _id: 65073de65f81b51fc4fc9059
 // IF oauth login profile has a url for profile picture, try to fetch arraybuffer
 // then try to discover mimetype and make a buffer
 // if that works, then save to db
@@ -234,7 +245,7 @@ exports.authenticateToken = (req, res, next) => {
 // started to implement on fb user
 // need to test it - first need to delete current fb user so that it builds a new one...
 // see if it works. 
-// it is working!! I believe. Need to double check with google user (and add "photo" field to creating user)
+// it is working!! I believe. Need to double check with google user.
 const getUserPhoto = async (photoUrl) => {
   const photo = await getArrayBuffer(photoUrl)
   const uint8 = new Uint8Array(photo)
