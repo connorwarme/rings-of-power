@@ -234,6 +234,7 @@ exports.authenticateToken = (req, res, next) => {
 // started to implement on fb user
 // need to test it - first need to delete current fb user so that it builds a new one...
 // see if it works. 
+// it is working!! I believe. Need to double check with google user (and add "photo" field to creating user)
 const getUserPhoto = async (photoUrl) => {
   const photo = await getArrayBuffer(photoUrl)
   const uint8 = new Uint8Array(photo)
