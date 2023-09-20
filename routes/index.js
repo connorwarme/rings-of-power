@@ -68,7 +68,7 @@ router.post('/editcomment', index_controller.verifyToken, index_controller.edit_
 router.post('/deletecomment', index_controller.verifyToken, index_controller.delete_comment_post)
 
 router.get('/mock', async (req, res) => {
-  const photo = await getArrayBuffer("https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExNDB4bDZzM3VqZ211cThjbDV4cGYxNDJ2YmgyMzduaHBrdjVsaXNhaCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/lszAB3TzFtRaU/giphy.gif")
+  const photo = await getArrayBuffer("https://platform-lookaside.fbsbx.com/platform/profilepic/?asid=10160671416325610&height=200&width=200&ext=1697769912&hash=AeTFJoI5bhlBM7qrCuM")
   const uint8 = new Uint8Array(photo)
   const type = getMimeTypeFromArrayBuffer(uint8)
   const buffer = Buffer.from(uint8)
@@ -100,6 +100,7 @@ const getMimeTypeFromArrayBuffer = (uint8arr) => {
 
 const getArrayBuffer = async (url) => {
   const response = await fetch(url)
+  console.log(response)
   return response.arrayBuffer()
 }
 
