@@ -18,25 +18,15 @@ const axios = require("axios")
 const facebook = {
   clientID: process.env.FB_APP_ID,
   clientSecret: process.env.FB_APP_KEY,
-  //todo: based on env, change url to localhost, dev or prod
+  // todo: based on env, change url to localhost, dev or prod
   callbackURL: "http://localhost:3000/auth/facebook/redirect",
-  //todo: do I need state?
+  // todo: do I need state?
   // state: true,
-  //todo: don't know if I need proof - what is it? what does it do?
-  // enableProof: true, //to enable secret proof
-  profileFields: ['id', 'emails', 'name', 'picture.type(large)'] //scope of fields
+  // todo: don't know if I need proof - what is it? what does it do?
+  // enableProof: true, // to enable secret proof
+  profileFields: ['id', 'emails', 'name', 'picture.type(large)'] // scope of fields
 }
-// might be able to build this into facebook strategy fn
-// trying to work on accepting fb profile image and save to db
-// const formatFB = (profile) => {
-//   return {
-//     first_name: profile.first_name,
-//     family_name: profile.last_name,
-//     email: profile.email,
-//     picture: profile.picture.data.url,
-//     fbid: profile.id,
-//   }
-// }
+
 const formatFB = async (profile) => {
   let photo = null
   if (profile.picture.data.url) {
