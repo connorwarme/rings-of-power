@@ -365,14 +365,15 @@ exports.friends_delete_post = asyncHandler(async(req, res, next) => {
   res.json({ user: req.user.user, userList, otherList })
 })
 exports.post_get = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.id).populate("author").exec()
+  const post = await Post.findById(req.params.id).populate("author").populate("photo").exec()
   if (post === null) {
     const error = new Error("Post not found in database.")
     error.status = 404
     error.msg = error.message
     res.json({ errors: [ error ] })
   } else {
-    res.json({ post })
+    let photo = post.photo ? post.photo.photoImagePath : false
+    res.json({ post, photoPath: photo })
   }
 })
 exports.create_post = [
@@ -393,12 +394,28 @@ exports.create_post = [
       content: req.body.content,
       author: req.user.user._id,
     })
+
+    // added the false path so that an error isn't thrown if no image exists - 9/22
+    let image = {
+      photoImagePath: false
+    }
+
+    const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
+      if (req.body.photo != null && imageMimeTypes.includes(req.body.photo.type)) {
+        image = new Photo({
+          photo: new Buffer.from(req.body.photo.data, 'base64'),
+          photoType: req.body.photo.type,
+        })
+        await image.save()
+        post.photo = image._id
+      }
+
     console.log(errors)
     if (!errors.isEmpty()) {
       res.json({ errors: errors.errors })
     } else {
       await post.save()
-      res.json({ user: req.user.user, post })
+      res.json({ user: req.user.user, post, photo: image, photoPath: image.photoImagePath })
     }
   })
 ]
