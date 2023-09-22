@@ -67,8 +67,8 @@ const google = {
 }
 const formatG = async (profile) => {
   let photo = null
-  if (profile.picture.data.url) {
-    const getObject = await getUserPhoto(profile.picture.data.url)
+  if (profile.picture) {
+    const getObject = await getUserPhoto(profile.picture.replace("=s96-c", ""))
     if (getObject.buffer && getObject.type) {
       photo = new Photo({
         photo: getObject.buffer,
@@ -236,16 +236,12 @@ exports.authenticateToken = (req, res, next) => {
   })
 }
 
-// IF oauth login profile has a url for profile picture, try to fetch arraybuffer
+// if oauth login profile has a url for profile picture, try to fetch arraybuffer
 // then try to discover mimetype and make a buffer
 // if that works, then save to db
 // if it fails at any point, give the user account the stock image _id instead
 // otherwise, give it the new photo _id
 
-// started to implement on fb user
-// need to test it - first need to delete current fb user so that it builds a new one...
-// see if it works. 
-// it is working!! I believe. Need to double check with google user.
 const getUserPhoto = async (photoUrl) => {
   const photo = await getArrayBuffer(photoUrl)
   const uint8 = new Uint8Array(photo)
