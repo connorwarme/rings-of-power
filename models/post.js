@@ -54,7 +54,12 @@ const PostSchema = new Schema({
         required: true,
       }
     }
-  ]
+  ],
+  photo: {
+    type: Schema.Types.ObjectId,
+    ref: "Photo",
+    required: false,
+  },
 })
 
 PostSchema.virtual("url").get(function() {
