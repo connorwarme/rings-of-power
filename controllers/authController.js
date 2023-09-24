@@ -28,11 +28,10 @@ exports.user_get = async (req, res) => {
     // generate tokens
     // const accessToken = generateAccessToken(req.user)
     // const refreshToken = generateRefreshToken(req.user)
-    // // add to array
+    // add to array
     // refreshTokens.push(refreshToken)
     const user = await User.findById(req.user.user._id).populate("friend_list").populate("photo").exec()
     const photo = user.photo ? user.photo.photoImagePath : null
-    console.log(photo)
     return res.send({
       user: user,
       photo: photo,
