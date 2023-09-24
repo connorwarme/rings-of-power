@@ -432,18 +432,32 @@ exports.edit_post = [
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req)
 
-    const post = await Post.findById(req.params.id).exec()
-    console.log(post)
+    const post = await Post.findById(req.params.id).populate("photo").exec()
+    const oldPhotoId = post.photo ? post.photo._id : false
 
     post.title = req.body.title
     post.content = req.body.content
 
-    console.log(errors)
+    let image = {
+      photoImagePath: false
+    }
+    const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
+    if (req.body.photo != null && imageMimeTypes.includes(req.body.photo.type)) {
+      image = new Photo({
+        photo: new Buffer.from(req.body.photo.data, 'base64'),
+        photoType: req.body.photo.type,
+      })
+      await image.save()
+      post.photo = image._id
+      if (oldPhotoId) {
+        Photo.findByIdAndDelete(oldPhotoId)
+      }
+    }
     if (!errors.isEmpty()) {
       res.json({ errors: errors.errors })
     } else {
       await post.save()
-      res.json({ user: req.user.user, post: post })
+      res.json({ user: req.user.user, post: post, photo: image, photoPath: image.photoImagePath })
     }
   })
 ]
