@@ -450,7 +450,7 @@ exports.edit_post = [
       await image.save()
       post.photo = image._id
       if (oldPhotoId) {
-        Photo.findByIdAndDelete(oldPhotoId)
+        await Photo.findByIdAndDelete(oldPhotoId).exec()
       }
     }
     if (!errors.isEmpty()) {
@@ -462,7 +462,7 @@ exports.edit_post = [
   })
 ]
 exports.delete_post = asyncHandler(async (req, res, next) => {
-  const post = await Post.findById(req.params.id).exec()
+  const post = await Post.findById(req.params.id).populate("photo").exec()
   if (post === null) {
     const error = new Error("Post not found in database.")
     error.status = 404
@@ -474,6 +474,9 @@ exports.delete_post = asyncHandler(async (req, res, next) => {
     error.msg = error.message
     res.json({ errors: [ error ] })
   } else {
+    if (post.photo) {
+      await Photo.findByIdAndDelete(post.photo._id).exec()
+    }
     await Post.findByIdAndDelete(req.params.id)
     res.json({ message: "Successfully deleted post."})
   }
