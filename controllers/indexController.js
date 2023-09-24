@@ -145,7 +145,9 @@ exports.profile_update_post = [
     oldUser.family_name = req.body.family_name
     oldUser.picture = req.body.picture
 
-    let image;
+    let image = {
+      photoImagePath: false
+    }
 
     const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
       if (req.body.photo != null && imageMimeTypes.includes(req.body.photo.type)) {
