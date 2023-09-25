@@ -446,16 +446,19 @@ exports.edit_post = [
       photoImagePath: false
     }
     const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
-    if (req.body.photo != null && imageMimeTypes.includes(req.body.photo.type)) {
+    if (req.body.photoRadio == true && oldPhotoId) {
+      image.photoImagePath = post.photo.photoImagePath
+    }
+    else if (req.body.photoRadio === 'new' && imageMimeTypes.includes(req.body.photo.type)) {
       image = new Photo({
         photo: new Buffer.from(req.body.photo.data, 'base64'),
         photoType: req.body.photo.type,
       })
       await image.save()
       post.photo = image._id
-      if (oldPhotoId) {
-        await Photo.findByIdAndDelete(oldPhotoId).exec()
-      }
+    }
+    if (((req.body.photoRadio == false) || (req.body.photoRadio === 'new')) && oldPhotoId) {
+      await Photo.findByIdAndDelete(oldPhotoId).exec()
     }
     if (!errors.isEmpty()) {
       res.json({ errors: errors.errors })
