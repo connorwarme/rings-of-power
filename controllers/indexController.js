@@ -141,7 +141,8 @@ exports.profile_update_post = [
 
   asyncHandler(async (req, res, next) => {
     const errors = validationResult(req)
-    const oldUser = await User.findById(req.body.userid).populate("friend_list").exec()
+    const oldUser = await User.findById(req.body.userid).populate("friend_list").populate("photo").exec()
+    const oldPhotoId = oldUser.photo ? oldUser.photo._id : false
 
     oldUser.first_name = req.body.first_name
     oldUser.family_name = req.body.family_name
@@ -150,17 +151,21 @@ exports.profile_update_post = [
     let image = {
       photoImagePath: false
     }
-
     const imageMimeTypes = ['image/jpeg', 'image/png', 'image/gif']
-      if (req.body.photo != null && imageMimeTypes.includes(req.body.photo.type)) {
-        image = new Photo({
-          photo: new Buffer.from(req.body.photo.data, 'base64'),
-          photoType: req.body.photo.type,
-        })
-        await image.save()
-        oldUser.photo = image._id
-      }
-
+    if (req.body.photo.photoRadio == true && oldPhotoId) {
+      image.photoImagePath = oldUser.photo.photoImagePath
+    }
+    else if (req.body.photo.photoRadio === 'new' && imageMimeTypes.includes(req.body.photo.photo.type)) {
+      image = new Photo({
+        photo: new Buffer.from(req.body.photo.photo.data, 'base64'),
+        photoType: req.body.photo.photo.type,
+      })
+      await image.save()
+      oldUser.photo = image._id
+    }
+    if (((req.body.photo.photoRadio == false) || (req.body.photo.photoRadio === 'new')) && oldPhotoId) {
+      await Photo.findByIdAndDelete(oldPhotoId).exec()
+    }
 
     if (!errors.isEmpty()) {
       return res.json({ errors: errors.array(), oldUser })
