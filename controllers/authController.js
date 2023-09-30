@@ -60,7 +60,6 @@ exports.oauth = (req, res, next) => {
 exports.login_localvs = [
   body("email", "Please enter your email address.")
   .trim()
-  .isLength({ min: 1 })
   .isEmail()
   .escape(),
   body("password", "Please enter your password.")
