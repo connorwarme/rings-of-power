@@ -35,7 +35,9 @@ exports.login_post = (req, res, next) => {
 // do i need to do a verify email?
 // how do I add the options to the passport.authenticate fn? aka differentiate between
 // how to organize/structure this new code (separate folders for local, fb, google?)
-
+const generateAccessToken = (user) => {
+  return jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "1500m" })
+}
 
 exports.signup_get = asyncHandler(async (req, res, next) => {
   res.render("signup", { title: "Signup" })
@@ -89,6 +91,7 @@ exports.signup_post = [
         },
         friend_list: friendlist._id,
       })
+      const token = generateAccessToken(user)
       if (!errors.isEmpty()) {
         res.json({ errors: errors.array(), user })
         return
@@ -105,6 +108,7 @@ exports.signup_post = [
           res.json({
             title: "User Profile",
             user,
+            access: token,
           })
         }
       }
