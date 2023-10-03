@@ -53,9 +53,7 @@ exports.signup_post = [
     .escape(),
   body("email", "Please add your email address.")
     .trim()
-    .isLength({ min: 1 })
     .isEmail()
-    .withMessage("Must be a valid email address!")
     .escape(),
   body("password", "Password required, must be at least 6 characters.")
     .trim()
