@@ -135,6 +135,10 @@ exports.profile_update_post = [
     .trim()
     .isLength({ min: 1 })
     .escape(),
+  body("bio")
+    .trim()
+    .optional({ values: 'falsy' })
+    .escape(),
   body("picture")
     .trim()
     .optional({ values: 'falsy' })
@@ -148,6 +152,7 @@ exports.profile_update_post = [
 
     oldUser.first_name = req.body.first_name
     oldUser.family_name = req.body.family_name
+    oldUser.bio = req.body.bio
     oldUser.picture = req.body.picture
 
     let image = {
