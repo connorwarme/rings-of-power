@@ -30,11 +30,6 @@ exports.login_post = (req, res, next) => {
   })(req, res, next)
 }
 
-// learn how to incorporate oauth w/ facebook and google
-// do i need to change my user schema?
-// do i need to do a verify email?
-// how do I add the options to the passport.authenticate fn? aka differentiate between
-// how to organize/structure this new code (separate folders for local, fb, google?)
 const generateAccessToken = (user) => {
   return jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "1500m" })
 }
@@ -648,7 +643,8 @@ const savePhoto = async (profile, reqPhoto) => {
     const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
     if (token != null) {
-      req.token = token // todo: is this best practice?
+      req.token = token 
+      // todo: is this best practice?
       // I put the token on the req.obj so that I'd be able to run a check on the login page (see fn above)
       // But I'm not sure that I even need this function at all...
       const error = new Error("You are already a user!")
