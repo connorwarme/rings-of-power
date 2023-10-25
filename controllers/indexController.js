@@ -180,8 +180,16 @@ exports.profile_update_post = [
 // should these two be bunched together? 
 // would make for only one db query, and just return an allposts and a someposts...
 exports.posts_all_get = asyncHandler(async(req, res, next) => {
-  const posts = await Post.find({}).populate("author").exec()
-  res.json({ posts })
+  const posts = await Post.find({}).populate("author").populate("photo").exec()
+  const postsPlus = []
+  posts.map(post => {
+    const copy = {...post}
+    if (post.photo) {
+      copy.photoImagePath = post.photo.photoImagePath
+    }
+    postsPlus.push(copy)
+  })
+  res.json({ posts: postsPlus })
 })
 exports.posts_other_get = asyncHandler(async(req, res, next) => {
   const posts = await Post.find({}).exec()
