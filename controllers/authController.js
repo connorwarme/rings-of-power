@@ -52,11 +52,6 @@ exports.oauth = (req, res, next) => {
   res.send({ accessToken: token })
 }
 
-// todo: don't think I need this route. local login will be on initial login route, along w/ btn for google and fb login
-// exports.login_local = asyncHandler(async (req, res, next) => {
-//   res.render("login", { title: "Login" })
-// })
-
 exports.login_localvs = [
   body("email", "Please enter your email address.")
   .trim()
