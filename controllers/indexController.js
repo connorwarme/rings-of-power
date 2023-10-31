@@ -647,7 +647,7 @@ const savePhoto = async (profile, reqPhoto) => {
     }
     jwt.verify(token, process.env.JWT_KEY, (err, user) => {
       if (err) {
-        const error = new Error("You don't have proper clearance :/")
+        const error = new Error("You lack clearance.")
         error.status = 403
         error.msg = error.message
         return res.json({ errors: [ error ] })
