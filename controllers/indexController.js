@@ -234,7 +234,6 @@ exports.friendlist = asyncHandler(async(req, res, next) => {
 exports.getUser = asyncHandler(async(req, res, next) => {
   const user = await User.findById(req.params.id).populate("photo").exec()
   const photoPath = user.photo ? user.photo.photoImagePath : null
-  console.log(photoPath)
   return res.json({ user, name: user.name, photoPath: photoPath })
 })
 
