@@ -227,6 +227,17 @@ const alreadyFriend = (friend_list, userid) => {
   }
   return answer
 }
+exports.friendlist = asyncHandler(async(req, res, next) => {
+  const fullList = await Friends.findById(req.params.id).exec()
+  return res.json({ friends: fullList.list })
+})
+exports.getUser = asyncHandler(async(req, res, next) => {
+  const user = await User.findById(req.params.id).populate("photo").exec()
+  const photoPath = user.photo ? user.photo.photoImagePath : null
+  console.log(photoPath)
+  return res.json({ user, name: user.name, photoPath: photoPath })
+})
+
 // query db to get comment author info
 exports.comment_author_get = asyncHandler(async(req, res, next) => {
   const author = await User.findById(req.params.id).exec()

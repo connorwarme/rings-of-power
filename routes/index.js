@@ -50,6 +50,8 @@ router.get('/other-posts', index_controller.verifyToken, index_controller.posts_
 router.get('/users', index_controller.verifyToken, index_controller.users_get)
 
 router.get('/friends', index_controller.verifyToken, index_controller.friends_get)
+router.get('/friendlist/:id', index_controller.verifyToken, index_controller.friendlist)
+router.get('/getuser/:id', index_controller.verifyToken, index_controller.getUser)
 router.get('/author/:id', index_controller.verifyToken, index_controller.comment_author_get)
 
 router.post('/sendrequest', index_controller.verifyToken, index_controller.friends_send_request_post)
