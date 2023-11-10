@@ -216,8 +216,16 @@ exports.posts_other_get = asyncHandler(async(req, res, next) => {
 })
 
 exports.users_get = asyncHandler(async(req, res, next) => {
-  const usersList = await User.find({}).exec()
-  res.json({ users: usersList })
+  const usersList = await User.find({}).populate("photo").exec()
+  const usersPlus = []
+  usersList.map(user => {
+    const copy = {...user}
+    if (user.photo) {
+      copy.photoImagePath = user.photo.photoImagePath
+    }
+    usersPlus.push(copy)
+  })
+  res.json({ users: usersPlus })
 })
 
 exports.friends_get = asyncHandler(async(req, res, next) => {
