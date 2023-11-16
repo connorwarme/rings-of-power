@@ -93,6 +93,8 @@ exports.signup_post = [
         if (emailExists) {
           const error = new Error("Email address already associated with an account!")
           error.status = 404 
+          error.msg = error.message
+          error.path = 'email'
           console.log(error.message)
           res.json({ errors: error, user })
         } else {
