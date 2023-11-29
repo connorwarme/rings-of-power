@@ -21,6 +21,8 @@ router.get("/google", auth_controller.login_google)
 
 router.get("/google/redirect", auth_controller.login_google_redirect)
 
+router.post("/guest", auth_controller.login_guest)
+
 // router.get("/login/success", jwt.verifyToken, (req, res) => {
 //   if (req.user) {
 //     res.status(200).json({
