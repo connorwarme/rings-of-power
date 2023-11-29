@@ -141,6 +141,27 @@ exports.login_google_redirect = (req, res, next) => {
     session: true,
   })(req, res, next)
 }
+exports.login_guest = (req, res, next) => {
+  req.body.email = process.env.GUEST_ID
+  req.body.password = process.env.GUEST_KEY
+  console.log(req.body)
+  passport.authenticate("local", { session: false }, (err, user, info) => {
+    if (err) {
+      console.log(err)
+      return res.json({ errors: err })
+    }
+    if (user === false) {
+      const error = new Error("Guest user account not found!")
+      error.status = 404
+      console.log(error)
+      return res.json({ errors: error })
+    } else {
+      // generate token
+      const accessToken = generateAccessToken(user)
+      return res.json({ user, accessToken })
+    }
+  })(req, res, next)
+}
 
 exports.refresh_token_post = (req, res, next) => {
   // take the fresh token from the user
