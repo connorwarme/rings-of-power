@@ -30,6 +30,7 @@
     "pug": "2.0.0-beta11"
   },
   "devDependencies": {
+    "@flydotio/dockerfile": "^0.4.11",
     "nodemon": "^2.0.22"
   }
 }
