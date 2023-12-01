@@ -8,6 +8,9 @@ primary_region = "ord"
 
 [build]
 
+[env]
+  PORT = "3000"
+
 [http_service]
   internal_port = 3000
   force_https = true
@@ -16,7 +19,7 @@ primary_region = "ord"
   min_machines_running = 0
   processes = ["app"]
   [http_service.concurrency]
-    type="requests"
+    type = "requests"
     soft_limit = 200
     hard_limit = 250
 
