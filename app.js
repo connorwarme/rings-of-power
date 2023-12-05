@@ -51,7 +51,7 @@ app.use(passport.session())
 
 app.use(cors(
   {
-    origin: [ 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth' ],
+    origin: [ 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth', 'http://localhost:4173' ],
     methods: [ "GET", "POST", "PUT", "DELETE" ],
     credentials: true,
   }
