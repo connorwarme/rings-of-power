@@ -51,11 +51,13 @@ app.use(passport.session())
 
 app.use(cors(
   {
-    origin: [ 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth', 'http://localhost:4173', 'https://connorwarme.github.io/rop-lair' ],
+    origin: [ 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth', 'http://localhost:4173', 'https://connorwarme.github.io' ],
     methods: [ "GET", "POST", "PUT", "DELETE" ],
     credentials: true,
   }
 ))
+// cors preflight - enabled across the board
+app.options('*', cors())
 
 // set up routes
 app.use('/', indexRouter);
