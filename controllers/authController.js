@@ -122,8 +122,8 @@ exports.login_facebook = (req, res, next) => {
 
 exports.login_facebook_redirect = (req, res, next) => {
   passport.authenticate('facebook', {
-    successRedirect: 'http://localhost:5173/auth/success',
-    failureRedirect: 'http://localhost:5173/login', 
+    successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
+    failureRedirect: 'https://connorwarme.github.io/rop-lair/login', 
     session: true, 
   })(req, res, next)
 }
@@ -136,8 +136,8 @@ exports.login_google = (req, res, next) => {
 // not sure if this is how i want to handle failure, but will follow up. going to make a simple route/fn in routes page
 exports.login_google_redirect = (req, res, next) => {
   passport.authenticate('google', {
-    successRedirect: 'http://localhost:5173/auth/success',
-    failureRedirect: 'http://localhost:5173/login',
+    successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
+    failureRedirect: 'https://connorwarme.github.io/rop-lair/login',
     session: true,
   })(req, res, next)
 }
