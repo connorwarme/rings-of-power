@@ -19,7 +19,7 @@ const facebook = {
   clientID: process.env.FB_APP_ID,
   clientSecret: process.env.FB_APP_KEY,
   // todo: based on env, change url to localhost, dev or prod
-  callbackURL: "http://localhost:3000/auth/facebook/redirect",
+  callbackURL: "https://rings-of-power.fly.dev/auth/facebook/redirect",
   // todo: do I need state?
   // state: true,
   // todo: don't know if I need proof - what is it? what does it do?
@@ -53,7 +53,7 @@ const google = {
   clientID: process.env.G_APP_ID,
   clientSecret: process.env.G_APP_KEY,
   //todo: based on env, change url to localhost, dev or prod
-  callbackURL: "http://localhost:3000/auth/google/redirect",
+  callbackURL: "https://rings-of-power.fly.dev/auth/google/redirect",
 }
 const formatG = async (profile) => {
   let photo = null
