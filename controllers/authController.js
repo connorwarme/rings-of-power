@@ -32,7 +32,7 @@ exports.user_get = async (req, res) => {
     // refreshTokens.push(refreshToken)
     const user = await User.findById(req.user.user._id).populate("friend_list").populate("photo").exec()
     const photo = user.photo ? user.photo.photoImagePath : null
-    return res.send({
+    return res.json({
       user: user,
       photo: photo,
       // access: accessToken,
@@ -40,6 +40,7 @@ exports.user_get = async (req, res) => {
     })
   } else {
     console.log('no user on request....keep debugging')
+    return res.json({ error: "There was an error, likely in finding the user on the request" })
   }
 }
 

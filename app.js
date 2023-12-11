@@ -34,11 +34,12 @@ app.use(
     saveUninitialized: true,
     // this cookie option messes w/ session + google oauth login
     // don't understand why, but cant be used
-    // cookie: {
-    //   sameSite: "none",
-    //   secure: true,
-    //   maxAge: 1000*60*24,
-    // } 
+    // uncommented cookie option on 12/10 - trying to debug oauth login once deployed
+    cookie: {
+      sameSite: "none",
+      secure: true,
+      maxAge: 1000*60*24,
+    } 
   }))
 
 app.use(passport.initialize())
@@ -51,13 +52,12 @@ app.use(passport.session())
 
 app.use(cors(
   {
-    origin: [ 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth', 'http://localhost:4173', 'https://connorwarme.github.io' ],
-    methods: [ "GET", "POST", "PUT", "DELETE" ],
+    origin: [ 'https://connorwarme.github.io', /connorwarme\.github\.io$/, 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth', 'http://localhost:4173' ],
+    methods: [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS" ],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'Accept', 'Accept-Language', 'Content-Language', 'Origin', 'Referer', 'User-Agent', 'x-client-key', 'x-client-token', 'x-client-secret', 'X-Requested-With'],
     credentials: true,
   }
 ))
-// cors preflight - enabled across the board
-app.options('*', cors())
 
 // set up routes
 app.use('/', indexRouter);
