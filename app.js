@@ -14,6 +14,28 @@ require("./passport")
 
 const app = express();
 
+const corsOptions =   {
+  origin: ['https://connorwarme.github.io', 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth', 'http://localhost:4173'],
+  methods: [ "GET", "POST", "PUT", "DELETE", "OPTIONS" ],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'Accept', 'Accept-Language', 'Content-Language', 'Origin', 'Referer', 'User-Agent', 'x-client-key', 'x-client-token', 'x-client-secret', 'X-Requested-With'],
+  credentials: true,
+}
+app.use(cors(corsOptions))
+// when I was trying to debug my cors errors...I tried to manually set the headers, instead of the cors package.
+// turns out an error was causing my server to restart, and throwing a wrench in the oauth handling.
+// app.use((req, res, next) => {
+//   const allowedOrigins = ['https://connorwarme.github.io', 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth', 'http://localhost:4173'];
+//   const origin = req.headers.origin;
+//   // if (allowedOrigins.includes(origin)) {
+//   //    res.setHeader('Access-Control-Allow-Origin', origin);
+//   // }
+//   res.header('Access-Control-Allow-Origin', 'https://connorwarme.github.io');
+//   res.header('Access-Control-Allow-Methods', 'GET, OPTIONS, POST, PUT, DELETE');
+//   res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+//   res.header('Access-Control-Allow-Credentials', true);
+//   return next();
+// })
+
 const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth')
 const userRouter = require('./routes/user');
@@ -35,29 +57,20 @@ app.use(
     // this cookie option messes w/ session + google oauth login
     // don't understand why, but cant be used
     // uncommented cookie option on 12/10 - trying to debug oauth login once deployed
-    cookie: {
-      sameSite: "none",
-      secure: true,
-      maxAge: 1000*60*24,
-    } 
+    // cookie: {
+    //   sameSite: "none",
+    //   secure: true,
+    //   maxAge: 1000*60*24,
+    // } 
   }))
 
 app.use(passport.initialize())
 app.use(passport.session())
 
-// app.use(function(req, res, next) {
-//   res.locals.currentUser = req.user 
-//   next()
-// })
-
-app.use(cors(
-  {
-    origin: [ 'https://connorwarme.github.io', /connorwarme\.github\.io$/, 'http://localhost:5173', 'https://accounts.google.com/o/oauth2/v2/auth', 'https://www.facebook.com/v3.2/dialog/oauth', 'http://localhost:4173' ],
-    methods: [ "GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS" ],
-    allowedHeaders: ['Content-Type', 'Authorization', 'Access-Control-Allow-Origin', 'Accept', 'Accept-Language', 'Content-Language', 'Origin', 'Referer', 'User-Agent', 'x-client-key', 'x-client-token', 'x-client-secret', 'X-Requested-With'],
-    credentials: true,
-  }
-))
+app.use(function(req, res, next) {
+  res.locals.currentUser = req.user 
+  next()
+})
 
 // set up routes
 app.use('/', indexRouter);

@@ -24,7 +24,7 @@ exports.login = asyncHandler(async (req, res, next) => {
 })
 
 exports.user_get = async (req, res) => {
-  if (req.user) {
+  if (req.user && req.user.user) {
     // generate tokens
     // const accessToken = generateAccessToken(req.user)
     // const refreshToken = generateRefreshToken(req.user)
@@ -32,7 +32,7 @@ exports.user_get = async (req, res) => {
     // refreshTokens.push(refreshToken)
     const user = await User.findById(req.user.user._id).populate("friend_list").populate("photo").exec()
     const photo = user.photo ? user.photo.photoImagePath : null
-    return res.json({
+    return res.send({
       user: user,
       photo: photo,
       // access: accessToken,
@@ -40,7 +40,7 @@ exports.user_get = async (req, res) => {
     })
   } else {
     console.log('no user on request....keep debugging')
-    return res.json({ error: "There was an error, likely in finding the user on the request" })
+    return res.send({ error: "There was an error, likely in finding the user on the request" })
   }
 }
 
@@ -121,13 +121,35 @@ exports.login_facebook = (req, res, next) => {
   passport.authenticate('facebook', { scope: [ 'public_profile', 'email' ] })(req, res, next)
 }
 
-exports.login_facebook_redirect = (req, res, next) => {
+// old method.
+// exports.login_facebook_redirect = (req, res, next) => {
+//   passport.authenticate('facebook', {
+//     // changing on 12/11 to try and debug
+//     successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
+//     failureRedirect: 'https://connorwarme.github.io/rop-lair/login', 
+//     // successRedirect: 'http://localhost:5173/rop-lair/auth/success',
+//     // failureRedirect: 'http://localhost:5173/rop-lair/login',
+//     session: true, 
+//   })(req, res, next)
+// }
+// new method: trying to send a successful redirect, but after I figure out how to deal with req.user & get it to persist
+exports.login_facebook_redirect = [
   passport.authenticate('facebook', {
-    successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
+    // changing on 12/11 to try and debug
+    // successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
     failureRedirect: 'https://connorwarme.github.io/rop-lair/login', 
+    // successRedirect: 'http://localhost:5173/rop-lair/auth/success',
+    // failureRedirect: 'http://localhost:5173/rop-lair/login',
     session: true, 
-  })(req, res, next)
-}
+  }),
+  (req, res, next) => {
+    // res.header('Access-Control-Allow-Origin', 'https://connorwarme.github.io')
+    // res.header('Access-Control-Allow-Origin', 'http://localhost:5173')
+    console.log('req user' + req.user.email)
+    res.redirect('https://connorwarme.github.io/rop-lair/auth/success') 
+  }
+] 
+
 
 exports.login_google = (req, res, next) => {
   // not sure if this response type needs to be code. was trying to debug so I could use keep this authentication going on the backend
@@ -135,10 +157,14 @@ exports.login_google = (req, res, next) => {
 }
 
 // not sure if this is how i want to handle failure, but will follow up. going to make a simple route/fn in routes page
-exports.login_google_redirect = (req, res, next) => {
+// changed this on 12/12
+exports.login_google_redirect = () => {
   passport.authenticate('google', {
-    successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
+    // changing on 12/11 to try and debug
+    // successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
     failureRedirect: 'https://connorwarme.github.io/rop-lair/login',
+    // successRedirect: 'http://localhost:5173/rop-lair/auth/success',
+    // failureRedirect: 'http://localhost:5173/rop-lair/login',
     session: true,
   })(req, res, next)
 }

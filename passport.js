@@ -19,7 +19,9 @@ const facebook = {
   clientID: process.env.FB_APP_ID,
   clientSecret: process.env.FB_APP_KEY,
   // todo: based on env, change url to localhost, dev or prod
+  // changing on 12/11 to try and debug cors error
   callbackURL: "https://rings-of-power.fly.dev/auth/facebook/redirect",
+  // callbackURL: "http://localhost:3000/auth/facebook/redirect",
   // todo: do I need state?
   // state: true,
   // todo: don't know if I need proof - what is it? what does it do?
@@ -53,7 +55,10 @@ const google = {
   clientID: process.env.G_APP_ID,
   clientSecret: process.env.G_APP_KEY,
   //todo: based on env, change url to localhost, dev or prod
+  // changing on 12/11 to debug
   callbackURL: "https://rings-of-power.fly.dev/auth/google/redirect",
+  // callbackURL: "http://localhost:3000/auth/google/redirect",
+
 }
 const formatG = async (profile) => {
   let photo = null
@@ -187,6 +192,7 @@ passport.use(
 )
 
 passport.serializeUser(function(user, done) {
+  console.log(user)
   done(null, user.id)
 })
 passport.deserializeUser(async(id, done) => {
