@@ -45,6 +45,9 @@ exports.user_get = async (req, res) => {
 }
 
 exports.oauth = (req, res, next) => {
+  // need to use the cookie to find the user
+  // how does this work in firefox but not chrome?
+  
   // get the user 
   const user = req.user
   // make token

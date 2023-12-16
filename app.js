@@ -3,7 +3,6 @@ require('dotenv').config()
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
-const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const session = require("express-session")
 const passport = require("passport")
@@ -47,7 +46,6 @@ app.set('view engine', 'pug');
 app.use(logger('dev'));
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: false }));
-
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({ 
@@ -57,11 +55,11 @@ app.use(
     // this cookie option messes w/ session + google oauth login
     // don't understand why, but cant be used
     // uncommented cookie option on 12/10 - trying to debug oauth login once deployed
-    // cookie: {
-    //   sameSite: "none",
-    //   secure: true,
-    //   maxAge: 1000*60*24,
-    // } 
+    cookie: {
+      sameSite: "none",
+      secure: true,
+      maxAge: 1000*60*24,
+    } 
   }))
 
 app.use(passport.initialize())
