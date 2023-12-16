@@ -47,8 +47,9 @@ exports.user_get = async (req, res) => {
 exports.oauth = (req, res, next) => {
   // need to use the cookie to find the user
   // how does this work in firefox but not chrome?
-  
+  console.log(req.session)
   // get the user 
+  req.session.user ? console.log(req.session.user) : console.log('no, user not here')
   const user = req.user
   // make token
   const token = jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "1500m" })
@@ -148,7 +149,8 @@ exports.login_facebook_redirect = [
   (req, res, next) => {
     // res.header('Access-Control-Allow-Origin', 'https://connorwarme.github.io')
     // res.header('Access-Control-Allow-Origin', 'http://localhost:5173')
-    console.log('req user' + req.user.email)
+    console.log(req.user)
+    req.session.user = req.user
     res.redirect('https://connorwarme.github.io/rop-lair/auth/success') 
   }
 ] 
@@ -227,10 +229,11 @@ exports.logout_post = (req, res, next) => {
   // this check (req.session.user) doesn't work.
   if (req.session.user) {
     console.log('fireddddd')
+    req.session.destroy((err) => console.log(err))
     req.logout()
   }
   // remove refresh token from token array
   // const refreshToken = req.body.token
   // refreshTokens = refreshTokens.filter(token => token !== refreshToken)
-  return res.status(200).json("Logged out successfully!")
+  return res.status(200).clearCookie("connect.sid").json("Logged out successfully!")
 }

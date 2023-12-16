@@ -5,6 +5,7 @@ const express = require('express');
 const path = require('path');
 const logger = require('morgan');
 const session = require("express-session")
+const MongoStore = require("connect-mongo")
 const passport = require("passport")
 const cors = require("cors")
 
@@ -49,16 +50,19 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(
   session({ 
-    secret: "midnight", 
+    secret: process.env.SESSIONS_SECRET, 
     resave: false, 
     saveUninitialized: true,
+    store: MongoStore.create({
+      mongoUrl: process.env.SESSIONS_URL,
+    }),
     // this cookie option messes w/ session + google oauth login
     // don't understand why, but cant be used
     // uncommented cookie option on 12/10 - trying to debug oauth login once deployed
     cookie: {
       sameSite: "none",
       secure: true,
-      maxAge: 1000*60*24,
+      maxAge: 20000,
     } 
   }))
 
