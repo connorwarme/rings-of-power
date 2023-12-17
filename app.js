@@ -56,14 +56,17 @@ app.use(
     store: MongoStore.create({
       mongoUrl: process.env.SESSIONS_URL,
     }),
+    httpOnly: true,
+    secure: true,
+    maxAge: 1000 * 60 * 60 * 7,
     // this cookie option messes w/ session + google oauth login
     // don't understand why, but cant be used
     // uncommented cookie option on 12/10 - trying to debug oauth login once deployed
-    cookie: {
-      sameSite: "none",
-      secure: true,
-      maxAge: 20000,
-    } 
+    // cookie: {
+    //   sameSite: "none",
+    //   secure: true,
+    //   maxAge: 20000,
+    // } 
   }))
 
 app.use(passport.initialize())

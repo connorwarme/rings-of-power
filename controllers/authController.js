@@ -146,11 +146,17 @@ exports.login_facebook_redirect = [
     // failureRedirect: 'http://localhost:5173/rop-lair/login',
     session: true, 
   }),
-  (req, res, next) => {
+  async (req, res, next) => {
     // res.header('Access-Control-Allow-Origin', 'https://connorwarme.github.io')
     // res.header('Access-Control-Allow-Origin', 'http://localhost:5173')
     console.log(req.user)
-    req.session.user = req.user
+    req.session.user = req.user._id
+    try {
+      await req.session.save()
+    } catch (err) {
+      console.error('Error saving to session storage: ', err);
+      return next(new Error('Error creating user'));
+    }
     res.redirect('https://connorwarme.github.io/rop-lair/auth/success') 
   }
 ] 
