@@ -43,6 +43,8 @@ const userRouter = require('./routes/user');
 // set up view engine
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'pug');
+// trying this 12/18 - working on cookie issue
+app.set('trust proxy', 1);
 
 app.use(logger('dev'));
 app.use(express.json({ limit: '2mb' }));
@@ -56,17 +58,21 @@ app.use(
     store: MongoStore.create({
       mongoUrl: process.env.SESSIONS_URL,
     }),
+    // these, without the cookie options, worked in firefox. 
+    // chrome balked at lack of sameSite setting and lack of secure setting
     httpOnly: true,
     secure: true,
     maxAge: 1000 * 60 * 60 * 7,
+    proxy: true,
     // this cookie option messes w/ session + google oauth login
     // don't understand why, but cant be used
     // uncommented cookie option on 12/10 - trying to debug oauth login once deployed
-    // cookie: {
-    //   sameSite: "none",
-    //   secure: true,
-    //   maxAge: 20000,
-    // } 
+    cookie: {
+      httpOnly: true,
+      sameSite: "none",
+      secure: true,
+      maxAge: 20000,
+    } 
   }))
 
 app.use(passport.initialize())

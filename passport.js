@@ -114,7 +114,6 @@ passport.use(
     // need to set session to false? 
     async (accessToken, refreshToken, profile, done) => {
       const fbUser = await formatFB(profile._json)
-      console.log(fbUser)
       try {
         const user = await User.findOne({ email: fbUser.email })
         if (!user) {
