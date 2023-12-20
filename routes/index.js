@@ -7,13 +7,10 @@ require("../passport")
 const index_controller = require("../controllers/indexController")
 
 /* GET home page. */
-router.get('/', index_controller.verifyToken, function(req, res, next) {
-  console.log(req.user)
-  res.render('index', { 
-    title: 'Home',
-    user: req.user.user, 
-    token: req.token,
-  });
+router.get('/', function(req, res, next) {
+  res.status(200).json({
+    home: "The app is located at connorwarme.github.io/rop-lair"
+  })
   // res.json({ 
   //   user: req.user, 
   //   token: req.token,
