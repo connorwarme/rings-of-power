@@ -118,11 +118,13 @@ exports.login_local = (req, res, next) => {
   })(req, res, next)
 }
 
+// works, but now FB requires business account (and verification) to utilize their oauth login
+
 exports.login_facebook = (req, res, next) => {
   passport.authenticate('facebook', { scope: [ 'public_profile', 'email' ] })(req, res, next)
 }
 
-// old method.
+// old method. works.
 // exports.login_facebook_redirect = (req, res, next) => {
 //   passport.authenticate('facebook', {
 //     successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
@@ -130,7 +132,8 @@ exports.login_facebook = (req, res, next) => {
 //     session: true, 
 //   })(req, res, next)
 // }
-// new method: trying to send a successful redirect, but after I figure out how to deal with req.user & get it to persist
+// new method: trying to send a successful redirect, but after I figure out how to deal with req.user & get it to persist. works.
+// but see note above - FB login requires business account now. no longer using on app. 
 exports.login_facebook_redirect = [
   passport.authenticate('facebook', {
     failureRedirect: 'https://connorwarme.github.io/rop-lair/login', 
@@ -155,10 +158,10 @@ exports.login_google = (req, res, next) => {
 
 // not sure if this is how i want to handle failure, but will follow up. going to make a simple route/fn in routes page
 // changed this on 12/12
-exports.login_google_redirect = () => {
+exports.login_google_redirect = (req, res, next) => {
   passport.authenticate('google', {
     // changing on 12/11 to try and debug
-    // successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
+    successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
     failureRedirect: 'https://connorwarme.github.io/rop-lair/login',
     // successRedirect: 'http://localhost:5173/rop-lair/auth/success',
     // failureRedirect: 'http://localhost:5173/rop-lair/login',
