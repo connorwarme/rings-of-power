@@ -662,7 +662,7 @@ const savePhoto = async (profile, reqPhoto) => {
 
   exports.verifyToken = (req, res, next) => {
     const authHeader = req.headers['authorization']
-    console.log(`authHeader is: ${authHeader.split(' ')[1]}`)
+    // console.log(`authHeader is: ${authHeader.split(' ')[1]}`)
     const token = authHeader && authHeader.split(' ')[1]
     if (token == 'null') {
       // need user to sign in to access page content
@@ -684,7 +684,7 @@ const savePhoto = async (profile, reqPhoto) => {
     })
   }
   exports.verifyNoToken = (req, res, next) => {
-    const authHeader = req.headers['authorization']
+    // const authHeader = req.headers['authorization']
     const token = authHeader && authHeader.split(' ')[1]
     if (token != null) {
       req.token = token 
