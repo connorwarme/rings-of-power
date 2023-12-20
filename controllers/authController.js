@@ -46,10 +46,7 @@ exports.user_get = async (req, res) => {
 
 exports.oauth = (req, res, next) => {
   // need to use the cookie to find the user
-  // how does this work in firefox but not chrome?
-  console.log(req.session)
   // get the user 
-  req.session.user ? console.log(req.session.user) : console.log('no, user not here')
   const user = req.user
   // make token
   const token = jwt.sign({ user }, process.env.JWT_KEY, { expiresIn: "1500m" })
@@ -128,27 +125,18 @@ exports.login_facebook = (req, res, next) => {
 // old method.
 // exports.login_facebook_redirect = (req, res, next) => {
 //   passport.authenticate('facebook', {
-//     // changing on 12/11 to try and debug
 //     successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
 //     failureRedirect: 'https://connorwarme.github.io/rop-lair/login', 
-//     // successRedirect: 'http://localhost:5173/rop-lair/auth/success',
-//     // failureRedirect: 'http://localhost:5173/rop-lair/login',
 //     session: true, 
 //   })(req, res, next)
 // }
 // new method: trying to send a successful redirect, but after I figure out how to deal with req.user & get it to persist
 exports.login_facebook_redirect = [
   passport.authenticate('facebook', {
-    // changing on 12/11 to try and debug
-    // successRedirect: 'https://connorwarme.github.io/rop-lair/auth/success',
     failureRedirect: 'https://connorwarme.github.io/rop-lair/login', 
-    // successRedirect: 'http://localhost:5173/rop-lair/auth/success',
-    // failureRedirect: 'http://localhost:5173/rop-lair/login',
     session: true, 
   }),
   async (req, res, next) => {
-    // res.header('Access-Control-Allow-Origin', 'https://connorwarme.github.io')
-    // res.header('Access-Control-Allow-Origin', 'http://localhost:5173')
     req.session.user = req.user._id
     try {
       await req.session.save()
@@ -157,10 +145,8 @@ exports.login_facebook_redirect = [
       console.error('Error saving to session storage: ', err);
       return next(new Error('Error creating user'));
     }
-    // res.redirect('https://connorwarme.github.io/rop-lair/auth/success') 
   }
 ] 
-
 
 exports.login_google = (req, res, next) => {
   // not sure if this response type needs to be code. was trying to debug so I could use keep this authentication going on the backend
