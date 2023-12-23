@@ -219,15 +219,20 @@ exports.posts_other_get = asyncHandler(async(req, res, next) => {
 
 exports.users_get = asyncHandler(async(req, res, next) => {
   const usersList = await User.find({}).populate("photo").exec()
-  const usersPlus = []
-  usersList.map(user => {
-    const copy = {...user}
-    if (user.photo) {
-      copy.photoImagePath = user.photo.photoImagePath
-    }
-    usersPlus.push(copy)
-  })
-  res.json({ users: usersPlus })
+  // const usersPlus = []
+  // usersList.map(user => {
+  //   const copy = {...user}
+  //   if (user.photo) {
+  //     copy.photoImagePath = user.photo.photoImagePath
+  //   }
+  //   usersPlus.push(copy)
+  // })
+  res.json({ users: usersList})
+})
+exports.userphoto_get = asyncHandler(async(req, res, next) => {
+  const user = await User.findById(req.params.id).populate("photo").exec()
+  const photoPath = user.photo ? user.photo.photoImagePath : null
+  return res.json({ photoPath: photoPath })
 })
 
 exports.friends_get = asyncHandler(async(req, res, next) => {

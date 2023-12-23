@@ -45,6 +45,7 @@ router.get('/posts', index_controller.verifyToken, index_controller.posts_all_ge
 router.get('/other-posts', index_controller.verifyToken, index_controller.posts_other_get)
 
 router.get('/users', index_controller.verifyToken, index_controller.users_get)
+router.get('/userphoto/:id', index_controller.verifyToken, index_controller.userphoto_get)
 
 router.get('/friends', index_controller.verifyToken, index_controller.friends_get)
 router.get('/friendlist/:id', index_controller.verifyToken, index_controller.friendlist)
