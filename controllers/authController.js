@@ -92,7 +92,6 @@ exports.login_localvs = [
             const refreshToken = generateRefreshToken(user)
             // add to array
             refreshTokens.push(refreshToken)
-            console.log(accessToken)
             return res.json({ user, accessToken, refreshToken })
           }
         })(req, res, next)
@@ -171,7 +170,6 @@ exports.login_google_redirect = (req, res, next) => {
 exports.login_guest = (req, res, next) => {
   req.body.email = process.env.GUEST_ID
   req.body.password = process.env.GUEST_KEY
-  console.log(req.body)
   passport.authenticate("local", { session: false }, (err, user, info) => {
     if (err) {
       console.log(err)
@@ -223,7 +221,6 @@ exports.logout_post = (req, res, next) => {
   // need to run a check for session, then only run req.logout() for truthy
   // this check (req.session.user) doesn't work.
   if (req.session.user) {
-    console.log('fireddddd')
     req.session.destroy((err) => console.log(err))
     req.logout()
   }

@@ -9,11 +9,9 @@ const JwtStrategy = passportJWT.Strategy
 const ExtractJWT = passportJWT.ExtractJwt
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
-const session = require("express-session")
 const User = require('./models/user')
 const Friends = require("./models/friends")
 const Photo = require("./models/photo")
-const axios = require("axios")
 
 const facebook = {
   clientID: process.env.FB_APP_ID,
@@ -153,12 +151,11 @@ passport.use(
     // options for google oauth
     google, 
     async(accessToken, refreshToken, profile, done) => {
-      console.log(profile)
       const googleUser = await formatG(profile._json)
       try {
         const user = await User.findOne({ email: googleUser.email })
         if (!user) {
-          console.log('user not found, creating new one')
+          // user not found, creating new one
           const friendList = new Friends({
             list: [],
             pending: [],
@@ -181,6 +178,7 @@ passport.use(
           await newUser.save()
           return done(null, newUser, { message: "Welcome! User profile created" })
         }
+        // user found in database
         return done(null, user, { message: "Welcome back!" })
       } catch (err) {
         console.log(err)
@@ -252,7 +250,7 @@ const getMimeTypeFromUint8Array = (uint8arr) => {
     for (let i = 0; i < len; i++)
       signatureArr[i] = (uint8arr)[i].toString(16)
     const signature = signatureArr.join('').toUpperCase()
-    console.log(`signature is: ${signature}`)
+    // console.log(`signature is: ${signature}`)
     switch (signature) {
       case '89504E47':
         return 'image/png'

@@ -1,10 +1,7 @@
 const express = require("express")
 const router = express.Router()
-const passport = require("passport")
 const passportConfig = require("../passport")
-
 const auth_controller = require("../controllers/authController")
-const jwt = require("../jwt")
 
 // todo: do these routes need a verifyNoToken? 
 

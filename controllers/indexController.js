@@ -413,8 +413,8 @@ exports.friends_delete_post = asyncHandler(async(req, res, next) => {
     request: other_user.friend_list.request.filter(id => id != req.user.user._id.toString()),
     _id: other_user.friend_list._id,
   })
-  console.log(user_newlist)
-  console.log(other_newlist)
+  // console.log(user_newlist)
+  // console.log(other_newlist)
 
   // update both lists on the database
   const [userList, otherList] = await Promise.all([
@@ -591,7 +591,6 @@ exports.add_comment_post = [
       author: req.user.user._id,
       content: req.body.content,
     }
-    console.log(comment)
     if (!errors.isEmpty()) {
       res.json({ errors: errors.errors })
     } else {
